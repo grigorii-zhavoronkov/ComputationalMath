@@ -3,30 +3,32 @@ import kotlin.math.sqrt
 
 class GaussSeidel(private var eps: Double) {
 
-    fun solve(): Array<Int> {
+    fun solve(): Array<Double> {
         val size = 5
-        var input: Array<Array<Double>> = Array(size){ Array(size) {0.0} }
-        var previous: Array<Double> = Array(size){0.0}
-        var current: Array<Double> = Array(size){0.0}
+        val input_left: Array<Array<Double>> = Array(size){ Array(size) {0.0} }
+        val input_right: Array<Double> = Array(size) {0.0}
+        val previous: Array<Double> = Array(size){0.0}
+        val current: Array<Double> = Array(size){0.0}
         do {
             for (i in current.indices) {
                 previous[i] = current[i]
             }
             for (i in current.indices) {
-                var new_coef: Double = 0.0
+                var newCoef = 0.0
                 for (j in 0 until i) {
-                    new_coef += input[i][j] * current[j]
+                    newCoef += input_left[i][j] * current[j]
                 }
                 for (j in (i+1) until size) {
-                    new_coef += input[i][j] * previous[j];
+                    newCoef += input_left[i][j] * previous[j];
                 }
-                current[i] = ()
+                current[i] = (input_right[i] - newCoef) / input_left[i][i]
             }
-        } while (!converge())
+        } while (!converge(current, previous))
+        return current;
     }
 
     private fun converge(current: Array<Double>, previous: Array<Double>): Boolean {
-        var norm: Double = 0.0;
+        var norm = 0.0;
         for (i in current.indices) {
             norm += (current[i] - previous[i]).pow(2.0);
         }
