@@ -6,7 +6,7 @@ class GaussSeidel(private val eps: Double, private var input: Array<DoubleArray>
 
     var counter: Int = 0
 
-    private fun diagonalPrevalence(): Boolean {
+    private fun diagonalPrevalenceByCols(): Boolean {
         val changedValues = IntArray(size) { -1 }
         val diagPrevInput = Array(size){DoubleArray(size + 1)}
         for (i in 0 until size) {
@@ -34,8 +34,47 @@ class GaussSeidel(private val eps: Double, private var input: Array<DoubleArray>
         return true
     }
 
+    private fun diagonalPrevalenceByRows(): Boolean {
+        val changedValues = IntArray(size) { -1 }
+        val diagPrevInput = Array(size){DoubleArray(size + 1)}
+        for (i in 0 until size) {
+            var max = Double.MIN_VALUE
+            var maxRow = -1
+            for (j in 0 until size) {
+                if (input[j][i] > max) {
+                    max = input[j][i]
+                    maxRow = j
+                }
+            }
+            if (i == maxRow) {
+                changedValues[i] = maxRow
+                for (j in 0 until size) {
+                    diagPrevInput[j][maxRow] = input[j][i]
+                }
+                continue
+            }
+            var sum = 0.0
+            for (j in 0 until size) {
+                sum += input[j][i]
+            }
+            if ((sum - abs(max) < abs(max)) && (!changedValues.contains(maxRow))) {
+                changedValues[i] = maxRow
+                for (k in 0 until size) {
+                    diagPrevInput[maxRow][k] = input[i][k];
+                }
+            } else {
+                return false
+            }
+        }
+        for (i in 0 until size) {
+            diagPrevInput[i][size] = input[i][size]
+        }
+        input = diagPrevInput
+        return true
+    }
+
     fun solve(): Array<Double>? {
-        if (!diagonalPrevalence()) {
+        if (!diagonalPrevalenceByCols() && !diagonalPrevalenceByRows()) {
             return null
         }
         val inputLeft: Array<DoubleArray> = Array(size) { DoubleArray(size) }

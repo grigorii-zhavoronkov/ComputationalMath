@@ -6,7 +6,8 @@ const val DIVIDER = "===================="
 
 fun main(args: Array<String>) {
     val scanner = Scanner(System.`in`)
-    // TODO: Вывод меню  + выбор + InputReader + GaussSeidel + output
+    // TODO: Столбец погрешностей
+    // TODO: Случайные коэффициенты
 
     val inputReader = InputReader()
     var coefficients: Array<DoubleArray>? = null
