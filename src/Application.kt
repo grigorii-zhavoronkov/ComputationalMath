@@ -6,7 +6,6 @@ const val DIVIDER = "===================="
 
 fun main(args: Array<String>) {
     val scanner = Scanner(System.`in`)
-    // TODO: Столбец погрешностей
 
     val inputReader = InputReader()
     var coefficients: Array<DoubleArray>? = null
@@ -35,9 +34,9 @@ fun main(args: Array<String>) {
                         break@loop
                     }
                     2 -> {
+                        println(DIVIDER)
                         println("Вы выбрали ввод из файла")
                         while (true) {
-                            println(DIVIDER)
                             println("Формат файла")
                             println("Первая строчка - точность (eps)")
                             println("Вторая строчка - размер матрицы (n)")
@@ -58,6 +57,7 @@ fun main(args: Array<String>) {
                         }
                     }
                     3 -> {
+                        println(DIVIDER)
                         println("Вы выбрали заполнение матрицы случайными коэффициентами")
                         inputReader.randomCoefficients(scanner)
                         coefficients = inputReader.coefficients
@@ -82,9 +82,9 @@ fun main(args: Array<String>) {
         println("Матрица: ")
         for (i in 0 until size) {
             for (j in 0 until size) {
-                print("${coefficients!![i][j]} ")
+                print(String.format("%10.2f ", coefficients!![i][j]))
             }
-            println("| ${coefficients!![i][size]}")
+            println(String.format("| %10.2f", coefficients!![i][size]))
         }
 
         val solver = GaussSeidel(eps, coefficients!!, size)
@@ -93,7 +93,7 @@ fun main(args: Array<String>) {
 
             println("Решение системы:")
             for (i in solution.indices) {
-                println("x[${i + 1}]: ${solution[i]}")
+                println("x[${i + 1}]: ${solution[i]} +- ${solver.accuracy[i]}")
             }
             println("Количество итераций: ${solver.counter}")
         } else {

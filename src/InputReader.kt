@@ -1,4 +1,5 @@
 import java.util.*
+import kotlin.math.abs
 import kotlin.random.Random
 
 class InputReader {
@@ -111,7 +112,17 @@ class InputReader {
             coefficients!![i][i] = random.nextDouble(offset, range + offset)
             for (j in 0 until size) {
                 if (i != j) {
-                    coefficients!![i][j] = random.nextDouble(offset / (size + 1), (coefficients!![i][i]) / (size + 1));
+                    if (offset < 0) {
+                        coefficients!![i][j] = random.nextDouble(
+                            -abs(coefficients!![i][i]) / (size + 1),
+                            (abs(coefficients!![i][i])) / (size + 1)
+                        )
+                    } else {
+                        coefficients!![i][j] = random.nextDouble(
+                            offset,
+                            (abs(coefficients!![i][i])) / (size + 1)
+                        )
+                    }
                 }
             }
 

@@ -5,6 +5,7 @@ import kotlin.math.sqrt
 class GaussSeidel(private val eps: Double, private var input: Array<DoubleArray>, private val size: Int) {
 
     var counter: Int = 0
+    val accuracy: DoubleArray = DoubleArray(size)
 
     private fun diagonalPrevalenceByCols(): Boolean {
         val changedValues = IntArray(size) { -1 }
@@ -115,6 +116,7 @@ class GaussSeidel(private val eps: Double, private var input: Array<DoubleArray>
     private fun converge(current: Array<Double>, previous: Array<Double>): Boolean {
         var norm = 0.0
         for (i in 0 until current.size) {
+            accuracy[i] = abs(current[i] - previous[i])
             norm += (current[i] - previous[i]).pow(2.0);
         }
         return (sqrt(norm) < eps);
