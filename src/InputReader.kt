@@ -1,4 +1,5 @@
 import java.util.*
+import kotlin.random.Random
 
 class InputReader {
 
@@ -6,7 +7,7 @@ class InputReader {
     var size: Int = 0
     var coefficients: Array<DoubleArray>? = null
 
-    fun consoleCoefficientReader(scanner: Scanner) {
+    private fun epsAndSizeReader(scanner: Scanner) {
         while (true) {
             print("Введите точность (eps): ")
             try {
@@ -20,11 +21,19 @@ class InputReader {
             print("Введите размер матрицы (n): ")
             try {
                 size = scanner.next().toInt()
-                break
+                if (size <= 20) {
+                    break
+                } else {
+                    throw Exception()
+                }
             } catch (e: Exception) {
-                println("Вы ввели размер в неверном формате, попробуйте снова")
+                println("Вы ввели размер в неверном формате, попробуйте снова. (n <= 20)")
             }
         }
+    }
+
+    fun consoleCoefficientReader(scanner: Scanner) {
+        epsAndSizeReader(scanner)
         println("Ввод матрицы системы")
         coefficients = Array(size){DoubleArray(size+1)}
         for (i in coefficients!!.indices) {
@@ -66,6 +75,46 @@ class InputReader {
         
         for (i in 0 until size) {
             coefficients!![i][size] = fileScanner.next().trim().toDouble()
+        }
+    }
+
+    fun randomCoefficients(scanner: Scanner) {
+        epsAndSizeReader(scanner)
+        var range = 0.0
+        var offset = 0.0
+        while (true) {
+            print("Введите величину разброса случайной величины: ")
+            try {
+                range = scanner.next().toDouble()
+                if (range > 0) {
+                    break
+                } else {
+                    throw Exception()
+                }
+            } catch (e: Exception) {
+                println("Вы ввели величину разброса в неверном формате. Попробуйте снова.")
+            }
+        }
+        while (true) {
+            print("Введите смещение разброса случайной величины: ")
+            try {
+                offset = scanner.next().toDouble()
+                break
+            } catch (e: Exception) {
+                println("Вы ввели смещение в неверном формате. Попробуйте снова.")
+            }
+        }
+        coefficients = Array(size){DoubleArray(size+1)}
+        val random = Random(System.currentTimeMillis())
+        for (i in 0 until size) {
+            coefficients!![i][size] = random.nextDouble(offset, range + offset)
+            coefficients!![i][i] = random.nextDouble(offset, range + offset)
+            for (j in 0 until size) {
+                if (i != j) {
+                    coefficients!![i][j] = random.nextDouble(offset / (size + 1), (coefficients!![i][i]) / (size + 1));
+                }
+            }
+
         }
     }
     

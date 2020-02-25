@@ -7,7 +7,6 @@ const val DIVIDER = "===================="
 fun main(args: Array<String>) {
     val scanner = Scanner(System.`in`)
     // TODO: Столбец погрешностей
-    // TODO: Случайные коэффициенты
 
     val inputReader = InputReader()
     var coefficients: Array<DoubleArray>? = null
@@ -21,6 +20,7 @@ fun main(args: Array<String>) {
             println("Главное меню:")
             println("1) Ввод коэффициентов с клавиатуры")
             println("2) Ввод коэффициентов из файла")
+            println("3) Случайные коэффициенты")
             println("0) Выход")
             print("Ввод: ")
             try {
@@ -57,6 +57,14 @@ fun main(args: Array<String>) {
                             }
                         }
                     }
+                    3 -> {
+                        println("Вы выбрали заполнение матрицы случайными коэффициентами")
+                        inputReader.randomCoefficients(scanner)
+                        coefficients = inputReader.coefficients
+                        eps = inputReader.eps
+                        size = inputReader.size
+                        break@loop
+                    }
                     0 -> {
                         println("Выход из программы...")
                         exitProcess(0)
@@ -68,20 +76,20 @@ fun main(args: Array<String>) {
             }
         }
 
+        println(DIVIDER)
+        println("Заданная точность: $eps")
+        println("Заданное количество элементов: $size")
+        println("Матрица: ")
+        for (i in 0 until size) {
+            for (j in 0 until size) {
+                print("${coefficients!![i][j]} ")
+            }
+            println("| ${coefficients!![i][size]}")
+        }
+
         val solver = GaussSeidel(eps, coefficients!!, size)
         val solution = solver.solve()
-
-        println(DIVIDER)
         if (solution != null) {
-            println("Заданная точность: $eps")
-            println("Заданное количество элементов: $size")
-            println("Матрица: ")
-            for (i in 0 until size) {
-                for (j in 0 until size) {
-                    print("${coefficients[i][j]} ")
-                }
-                println("| ${coefficients[i][size]}")
-            }
 
             println("Решение системы:")
             for (i in solution.indices) {

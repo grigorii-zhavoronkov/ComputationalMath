@@ -13,8 +13,8 @@ class GaussSeidel(private val eps: Double, private var input: Array<DoubleArray>
             var max = Double.MIN_VALUE
             var maxCol = -1
             for (j in 0 until size) {
-                if (input[i][j] > max) {
-                    max = input[i][j]
+                if (abs(input[i][j]) > max) {
+                    max = abs(input[i][j])
                     maxCol = j
                 }
             }
@@ -23,7 +23,11 @@ class GaussSeidel(private val eps: Double, private var input: Array<DoubleArray>
                 diagPrevInput[maxCol] = input[i]
                 continue
             }
-            if ((input[i].sum() - abs(max) - input[i][size] < abs(max)) && (!changedValues.contains(maxCol))) {
+            var sum = 0.0
+            for (j in 0 until size) {
+                sum += abs(input[i][j])
+            }
+            if ((sum - max < max) && (!changedValues.contains(maxCol))) {
                 changedValues[i] = maxCol
                 diagPrevInput[maxCol] = input[i]
             } else {
@@ -41,8 +45,8 @@ class GaussSeidel(private val eps: Double, private var input: Array<DoubleArray>
             var max = Double.MIN_VALUE
             var maxRow = -1
             for (j in 0 until size) {
-                if (input[j][i] > max) {
-                    max = input[j][i]
+                if (abs(input[j][i]) > max) {
+                    max = abs(input[j][i])
                     maxRow = j
                 }
             }
@@ -55,9 +59,9 @@ class GaussSeidel(private val eps: Double, private var input: Array<DoubleArray>
             }
             var sum = 0.0
             for (j in 0 until size) {
-                sum += input[j][i]
+                sum += abs(input[j][i])
             }
-            if ((sum - abs(max) < abs(max)) && (!changedValues.contains(maxRow))) {
+            if ((sum - max < max) && (!changedValues.contains(maxRow))) {
                 changedValues[i] = maxRow
                 for (k in 0 until size) {
                     diagPrevInput[maxRow][k] = input[i][k];
