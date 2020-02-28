@@ -135,11 +135,13 @@ class GaussSeidel(
     }
 
     private fun converge(current: Array<Double>, previous: Array<Double>): Boolean {
-        var norm = 0.0
+        var converge = true
         for (i in 0 until current.size) {
             accuracy[i] = abs(current[i] - previous[i])
-            norm += (current[i] - previous[i]).pow(2.0);
+            if (abs(current[i] - previous[i]) > eps) {
+                converge = false
+            }
         }
-        return (sqrt(norm) < eps);
+        return converge
     }
 }
