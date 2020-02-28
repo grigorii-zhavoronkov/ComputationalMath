@@ -11,6 +11,7 @@ fun main(args: Array<String>) {
     var coefficients: Array<DoubleArray>? = null
     var eps: Double = 0.0
     var size: Int = 0
+    var maxIterations: Int = 0
 
     println("Данная программа позволяет решить СЛАУ методом Гаусса-Зейделя")
     while (true) {
@@ -31,6 +32,7 @@ fun main(args: Array<String>) {
                         coefficients = inputReader.coefficients
                         eps = inputReader.eps
                         size = inputReader.size
+                        maxIterations = inputReader.maxIterations
                         break@loop
                     }
                     2 -> {
@@ -39,7 +41,8 @@ fun main(args: Array<String>) {
                         while (true) {
                             println("Формат файла")
                             println("Первая строчка - точность (eps)")
-                            println("Вторая строчка - размер матрицы (n)")
+                            println("Вторая строчка - размер матрицы (n <= 20)")
+                            println("Третья строчка - максимальное количество итераций (0 - без ограничений)")
                             println("Следующие n строк - n элементов матрицы системы")
                             println("Последняя строка - столбец свободных членов")
                             print("Введите имя файла: ")
@@ -50,6 +53,7 @@ fun main(args: Array<String>) {
                                 coefficients = inputReader.coefficients
                                 eps = inputReader.eps
                                 size = inputReader.size
+                                maxIterations = inputReader.maxIterations
                                 break@loop
                             } catch (e: Exception) {
                                 println("Возникла ошибка при вводе из файла. Проверьте имя файла и его формат.")
@@ -63,6 +67,7 @@ fun main(args: Array<String>) {
                         coefficients = inputReader.coefficients
                         eps = inputReader.eps
                         size = inputReader.size
+                        maxIterations = inputReader.maxIterations
                         break@loop
                     }
                     0 -> {
@@ -87,7 +92,7 @@ fun main(args: Array<String>) {
             println(String.format("| %10.2f", coefficients!![i][size]))
         }
 
-        val solver = GaussSeidel(eps, coefficients!!, size)
+        val solver = GaussSeidel(eps, coefficients!!, size, maxIterations)
         val solution = solver.solve()
         if (solution != null) {
 

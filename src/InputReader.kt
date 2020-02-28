@@ -6,9 +6,10 @@ class InputReader {
 
     var eps: Double = 0.0
     var size: Int = 0
+    var maxIterations: Int = 0
     var coefficients: Array<DoubleArray>? = null
 
-    private fun epsAndSizeReader(scanner: Scanner) {
+    private fun configurationsReader(scanner: Scanner) {
         while (true) {
             print("Введите точность (eps): ")
             try {
@@ -31,10 +32,23 @@ class InputReader {
                 println("Вы ввели размер в неверном формате, попробуйте снова. (n <= 20)")
             }
         }
+        while (true) {
+            print("Введите максимальное количество итераций (0 - без ограничений): ")
+            try {
+                maxIterations = scanner.next().toInt()
+                if (maxIterations >= 0) {
+                    break
+                } else {
+                    throw Exception()
+                }
+            } catch (e: Exception) {
+                println("Вы ввели количество итераций в неверном формате. Попробуйте снова.")
+            }
+        }
     }
 
     fun consoleCoefficientReader(scanner: Scanner) {
-        epsAndSizeReader(scanner)
+        configurationsReader(scanner)
         println("Ввод матрицы системы")
         coefficients = Array(size){DoubleArray(size+1)}
         for (i in coefficients!!.indices) {
@@ -66,6 +80,10 @@ class InputReader {
     fun fileCoefficientReader(fileScanner: Scanner) {
         eps = fileScanner.next().toDouble()
         size = fileScanner.next().toInt()
+        maxIterations = fileScanner.next().toInt()
+        if (size > 20 || maxIterations < 0) {
+            throw Exception()
+        }
         coefficients = Array(size){DoubleArray(size+1)}
 
         for (i in 0 until size) {
@@ -80,7 +98,7 @@ class InputReader {
     }
 
     fun randomCoefficients(scanner: Scanner) {
-        epsAndSizeReader(scanner)
+        configurationsReader(scanner)
         var range = 0.0
         var offset = 0.0
         while (true) {

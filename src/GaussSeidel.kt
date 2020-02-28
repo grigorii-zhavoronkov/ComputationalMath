@@ -2,7 +2,11 @@ import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-class GaussSeidel(private val eps: Double, private var input: Array<DoubleArray>, private val size: Int) {
+class GaussSeidel(
+    private val eps: Double,
+    private var input: Array<DoubleArray>,
+    private val size: Int,
+    private val maxIterations: Int) {
 
     var counter: Int = 0
     val accuracy: DoubleArray = DoubleArray(size)
@@ -95,6 +99,7 @@ class GaussSeidel(private val eps: Double, private var input: Array<DoubleArray>
         val previous: Array<Double> = Array(size){0.0}
         val current: Array<Double> = inputRight.copyOf()
         do {
+
             counter++
             for (i in 0 until size) {
                 previous[i] = current[i]
@@ -109,7 +114,7 @@ class GaussSeidel(private val eps: Double, private var input: Array<DoubleArray>
                 }
                 current[i] = (inputRight[i] - newCoef) / inputLeft[i][i]
             }
-        } while (!converge(current, previous))
+        } while (!converge(current, previous) && !(maxIterations != 0 && maxIterations <= counter))
         return current
     }
 
