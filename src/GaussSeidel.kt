@@ -46,7 +46,7 @@ class GaussSeidel(
             for (j in 0 until size) {
                 sum += abs(input[i][j])
             }
-            if ((sum - max < max) && (!changedValues.contains(maxCol))) {
+            if ((sum - max <= max) && (!changedValues.contains(maxCol))) {
                 changedValues[i] = maxCol
                 diagPrevInput[maxCol] = input[i]
             } else {
@@ -80,7 +80,7 @@ class GaussSeidel(
             for (j in 0 until size) {
                 sum += abs(input[j][i])
             }
-            if ((sum - max < max) && (!changedValues.contains(maxRow))) {
+            if ((sum - max <= max) && (!changedValues.contains(maxRow))) {
                 changedValues[i] = maxRow
                 for (k in 0 until size) {
                     diagPrevInput[maxRow][k] = input[i][k];
