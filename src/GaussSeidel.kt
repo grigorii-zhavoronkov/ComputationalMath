@@ -37,16 +37,14 @@ class GaussSeidel(
                     maxCol = j
                 }
             }
-            if (i == maxCol) {
-                changedValues[i] = maxCol
-                diagPrevInput[maxCol] = input[i]
-                continue
-            }
             var sum = 0.0
             for (j in 0 until size) {
                 sum += abs(input[i][j])
             }
-            if ((sum - max <= max) && (!changedValues.contains(maxCol))) {
+            if ((sum - max <= max) && (i == maxCol)) {
+                changedValues[i] = maxCol
+                diagPrevInput[maxCol] = input[i]
+            } else if ((sum - max <= max) && (!changedValues.contains(maxCol))) {
                 changedValues[i] = maxCol
                 diagPrevInput[maxCol] = input[i]
             } else {
@@ -69,21 +67,19 @@ class GaussSeidel(
                     maxRow = j
                 }
             }
-            if (i == maxRow) {
-                changedValues[i] = maxRow
-                for (j in 0 until size) {
-                    diagPrevInput[j][maxRow] = input[j][i]
-                }
-                continue
-            }
             var sum = 0.0
             for (j in 0 until size) {
                 sum += abs(input[j][i])
             }
-            if ((sum - max <= max) && (!changedValues.contains(maxRow))) {
+            if ((sum - max <= max) && (i == maxRow)) {
+                changedValues[i] = maxRow
+                for (j in 0 until size) {
+                    diagPrevInput[j][maxRow] = input[j][i]
+                }
+            } else if ((sum - max <= max) && (!changedValues.contains(maxRow))) {
                 changedValues[i] = maxRow
                 for (k in 0 until size) {
-                    diagPrevInput[maxRow][k] = input[i][k];
+                    diagPrevInput[k][maxRow] = input[k][i];
                 }
             } else {
                 return false

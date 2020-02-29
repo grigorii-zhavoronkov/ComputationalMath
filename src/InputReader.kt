@@ -25,42 +25,72 @@ class InputReader {
     var maxIterations: Int = 0
     var coefficients: Array<DoubleArray>? = null
 
+    private fun readInputDouble(scanner: Scanner, infoMessage: String, errMessage: String): Double {
+        var input = 0.0
+        while (true) {
+            print("${infoMessage.capitalize()}: ")
+            try {
+                input = scanner.nextLine().toDouble()
+                return input
+            } catch (e: Exception) {
+                println(errMessage.capitalize())
+            }
+        }
+    }
+
+    private fun readInputDouble(scanner: Scanner, infoMessage: String, errMessage: String, bottomLimit: Double): Double {
+        var input = 0.0
+        while (true) {
+            input = readInputDouble(scanner, infoMessage, errMessage)
+            if (input >= bottomLimit) {
+                return input
+            } else {
+                println(errMessage)
+            }
+        }
+    }
+
+    private fun readInputInt(scanner: Scanner, infoMessage: String, errMessage: String): Int {
+        var input = 0
+        while (true) {
+            print("${infoMessage.capitalize()}: ")
+            try {
+                input = scanner.nextLine().toInt()
+                return input
+            } catch (e: Exception) {
+                println(errMessage.capitalize())
+            }
+        }
+    }
+
+    private fun readInputInt(scanner: Scanner, infoMessage: String, errMessage: String, bottomLimit: Int): Int {
+        var input = 0
+        while (true) {
+            input = readInputInt(scanner, infoMessage, errMessage)
+            if (input >= bottomLimit) {
+                return input
+            } else {
+                println(errMessage)
+            }
+        }
+    }
+
+    private fun readInputInt(scanner: Scanner, infoMessage: String, errMessage: String, bottomLimit: Int, upperLimit: Int): Int {
+        var input = 0
+        while (true) {
+            input = readInputInt(scanner, infoMessage, errMessage)
+            if (input in bottomLimit..upperLimit) {
+                return input
+            } else {
+                println(errMessage)
+            }
+        }
+    }
+
     private fun configurationsReader(scanner: Scanner) {
-        while (true) {
-            print("Введите точность (eps): ")
-            try {
-                eps = scanner.next().toDouble()
-                break
-            } catch (e: Exception) {
-                println("Вы ввели точность в неверном формате. Попробуйте снова.")
-            }
-        }
-        while(true) {
-            print("Введите размер матрицы (n): ")
-            try {
-                size = scanner.next().toInt()
-                if (size <= 20) {
-                    break
-                } else {
-                    throw Exception()
-                }
-            } catch (e: Exception) {
-                println("Вы ввели размер в неверном формате, попробуйте снова. (n <= 20)")
-            }
-        }
-        while (true) {
-            print("Введите максимальное количество итераций (0 - без ограничений): ")
-            try {
-                maxIterations = scanner.next().toInt()
-                if (maxIterations >= 0) {
-                    break
-                } else {
-                    throw Exception()
-                }
-            } catch (e: Exception) {
-                println("Вы ввели количество итераций в неверном формате. Попробуйте снова.")
-            }
-        }
+        eps = readInputDouble(scanner, "введите точность", "Вы ввели точность в неверном формате. Попробуйте снова.")
+        size = readInputInt(scanner, "Введите размер матрицы (n)", "Вы ввели размер в неверном формате, попробуйте снова. (n <= 20)", 0, 20)
+        maxIterations = readInputInt(scanner, "Введите максимальное количество итераций (0 - без ограничений)", "Вы ввели количество итераций в неверном формате. Попробуйте снова.", 0)
     }
 
     fun consoleCoefficientReader(scanner: Scanner) {
@@ -69,27 +99,11 @@ class InputReader {
         coefficients = Array(size){DoubleArray(size+1)}
         for (i in coefficients!!.indices) {
             for (j in 0 until coefficients!![i].size - 1) {
-                while (true) {
-                    print("Введите элемент a[${i+1}][${j+1}]: ")
-                    try {
-                        coefficients!![i][j] = scanner.next().toDouble()
-                        break
-                    } catch (e: Exception) {
-                        println("Вы ввели неверный коэффициент попробуйте снова")
-                    }
-                }
+                coefficients!![i][j] = readInputDouble(scanner, "Введите элемент a[${i + 1}][${j + 1}]", "Вы ввели неверный коэффициент попробуйте снова")
             }
         }
         for (i in coefficients!!.indices) {
-            while (true) {
-                print("Введите элемент b[${i+1}]: ")
-                try {
-                    coefficients!![i][size] = scanner.next().toDouble()
-                    break
-                } catch (e: Exception) {
-                    println("Вы ввели неверный коэффициент попробуйте снова")
-                }
-            }
+            coefficients!![i][size] = readInputDouble(scanner, "Введите элемент b[${i+1}]", "Вы ввели неверный коэффициент попробуйте снова")
         }
     }
 
@@ -115,52 +129,34 @@ class InputReader {
 
     fun randomCoefficients(scanner: Scanner) {
         configurationsReader(scanner)
-        var range = 0.0
-        var offset = 0.0
-        while (true) {
-            print("Введите величину разброса случайной величины: ")
-            try {
-                range = scanner.next().toDouble()
-                if (range > 0) {
-                    break
-                } else {
-                    throw Exception()
-                }
-            } catch (e: Exception) {
-                println("Вы ввели величину разброса в неверном формате. Попробуйте снова.")
-            }
-        }
-        while (true) {
-            print("Введите смещение разброса случайной величины: ")
-            try {
-                offset = scanner.next().toDouble()
-                break
-            } catch (e: Exception) {
-                println("Вы ввели смещение в неверном формате. Попробуйте снова.")
-            }
-        }
-        coefficients = Array(size){DoubleArray(size+1)}
+        val range = readInputDouble(scanner, "Введите величину разброса случайной величины", "Вы ввели величину разброса в неверном формате. Попробуйте снова.", 0.1)
+        val offset = readInputDouble(scanner, "Введите смещение разброса случайной величины", "Вы ввели смещение в неверном формате. Попробуйте снова.")
+        coefficients = generateRandomValues(range, offset)
+    }
+
+    private fun generateRandomValues(range: Double, offset: Double): Array<DoubleArray> {
         val random = Random(System.currentTimeMillis())
+        val coefficients = Array(size){DoubleArray(size+1)}
         for (i in 0 until size) {
-            coefficients!![i][size] = random.nextDouble(offset, range + offset)
-            coefficients!![i][i] = random.nextDouble(offset, range + offset)
+            coefficients[i][size] = random.nextDouble(offset, range + offset)
+            coefficients[i][i] = random.nextDouble(offset, range + offset)
             for (j in 0 until size) {
                 if (i != j) {
                     if (offset < 0) {
-                        coefficients!![i][j] = random.nextDouble(
-                            -abs(coefficients!![i][i]) / (size + 1),
-                            (abs(coefficients!![i][i])) / (size + 1)
+                        coefficients[i][j] = random.nextDouble(
+                            -abs(coefficients[i][i]) / (size + 1),
+                            (abs(coefficients[i][i])) / (size + 1)
                         )
                     } else {
-                        coefficients!![i][j] = random.nextDouble(
+                        coefficients[i][j] = random.nextDouble(
                             offset,
-                            (abs(coefficients!![i][i])) / (size + 1)
+                            (abs(coefficients[i][i])) / (size + 1)
                         )
                     }
                 }
             }
-
         }
+        return coefficients
     }
     
     
