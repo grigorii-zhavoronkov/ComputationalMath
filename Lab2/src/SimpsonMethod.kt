@@ -19,6 +19,7 @@ class SimpsonMethod(
             currentValue = simpson(n)
             accuracy = abs(currentValue - previousValue)
         } while (accuracy > eps)
+        accuracy /= 15 // правило Рунге
         answer = currentValue
     }
 
