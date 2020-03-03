@@ -25,7 +25,7 @@ class InputReader {
     var maxIterations: Int = 0
     var coefficients: Array<DoubleArray>? = null
 
-    fun readInputDouble(scanner: Scanner, infoMessage: String, errMessage: String): Double {
+    private fun readInputDouble(scanner: Scanner, infoMessage: String, errMessage: String): Double {
         var input = 0.0
         while (true) {
             print("${infoMessage.capitalize()}: ")
@@ -38,7 +38,7 @@ class InputReader {
         }
     }
 
-    fun readInputDouble(scanner: Scanner, infoMessage: String, errMessage: String, bottomLimit: Double): Double {
+    private fun readInputDouble(scanner: Scanner, infoMessage: String, errMessage: String, bottomLimit: Double): Double {
         var input = 0.0
         while (true) {
             input = readInputDouble(scanner, infoMessage, errMessage)
@@ -50,7 +50,7 @@ class InputReader {
         }
     }
 
-    fun readInputInt(scanner: Scanner, infoMessage: String, errMessage: String): Int {
+    private fun readInputInt(scanner: Scanner, infoMessage: String, errMessage: String): Int {
         var input = 0
         while (true) {
             print("${infoMessage.capitalize()}: ")
@@ -63,7 +63,7 @@ class InputReader {
         }
     }
 
-    fun readInputInt(scanner: Scanner, infoMessage: String, errMessage: String, bottomLimit: Int): Int {
+    private fun readInputInt(scanner: Scanner, infoMessage: String, errMessage: String, bottomLimit: Int): Int {
         var input = 0
         while (true) {
             input = readInputInt(scanner, infoMessage, errMessage)
@@ -75,7 +75,7 @@ class InputReader {
         }
     }
 
-    fun readInputInt(scanner: Scanner, infoMessage: String, errMessage: String, bottomLimit: Int, upperLimit: Int): Int {
+    private fun readInputInt(scanner: Scanner, infoMessage: String, errMessage: String, bottomLimit: Int, upperLimit: Int): Int {
         var input = 0
         while (true) {
             input = readInputInt(scanner, infoMessage, errMessage)
@@ -121,7 +121,7 @@ class InputReader {
                 coefficients!![i][j] = fileScanner.next().trim().toDouble()
             }
         }
-        
+
         for (i in 0 until size) {
             coefficients!![i][size] = fileScanner.next().trim().toDouble()
         }
@@ -144,13 +144,13 @@ class InputReader {
                 if (i != j) {
                     if (offset < 0) {
                         coefficients[i][j] = random.nextDouble(
-                            -abs(coefficients[i][i]) / (size + 1),
-                            (abs(coefficients[i][i])) / (size + 1)
+                                -abs(coefficients[i][i]) / (size + 1),
+                                (abs(coefficients[i][i])) / (size + 1)
                         )
                     } else {
                         coefficients[i][j] = random.nextDouble(
-                            offset,
-                            (abs(coefficients[i][i])) / (size + 1)
+                                offset,
+                                (abs(coefficients[i][i])) / (size + 1)
                         )
                     }
                 }
@@ -158,6 +158,6 @@ class InputReader {
         }
         return coefficients
     }
-    
-    
+
+
 }

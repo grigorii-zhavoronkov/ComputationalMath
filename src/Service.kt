@@ -4,6 +4,14 @@ import kotlin.system.exitProcess
 
 class Service {
 
+    val MENU_MESSAGE = """
+        Главное меню:
+        1) Ввод коэффициентов с клавиатуры
+        2) Ввод коэффициентов из файла
+        3) Случайные коэффициенты
+        0) Выход
+        Ввод""".trimIndent()
+
     private enum class MenuInputType {
         EXIT,
         KEYBOARD,
@@ -22,70 +30,53 @@ class Service {
 
         println("Данная программа позволяет решить СЛАУ методом Гаусса-Зейделя")
         while (true) {
-            loop@ while (true) {
-                println(DIVIDER)
-                println("Главное меню:")
-                println("1) Ввод коэффициентов с клавиатуры")
-                println("2) Ввод коэффициентов из файла")
-                println("3) Случайные коэффициенты")
-                println("0) Выход")
-                print("Ввод: ")
-                try {
-                    val inputType = MenuInputType.values()[scanner.nextLine().toInt()]
-                    when (inputType) {
-                        MenuInputType.KEYBOARD -> {
-                            println(DIVIDER)
-                            println("Вы выбрали ввод с консоли")
-                            inputReader.consoleCoefficientReader(scanner)
+            when (MenuInputType.values()[inputReader.readInputInt(scanner, MENU_MESSAGE, "Вы ввели неверное число. Попробуйте еще раз.", 0, 3)]) {
+                MenuInputType.KEYBOARD -> {
+                    println(DIVIDER)
+                    println("Вы выбрали ввод с консоли")
+                    inputReader.consoleCoefficientReader(scanner)
+                    coefficients = inputReader.coefficients
+                    eps = inputReader.eps
+                    size = inputReader.size
+                    maxIterations = inputReader.maxIterations
+                }
+                MenuInputType.FILE -> {
+                    println(DIVIDER)
+                    println("Вы выбрали ввод из файла")
+                    while (true) {
+                        println("Формат файла")
+                        println("Первая строчка - точность (eps)")
+                        println("Вторая строчка - размер матрицы (n <= 20)")
+                        println("Третья строчка - максимальное количество итераций (0 - без ограничений)")
+                        println("Следующие n строк - n элементов матрицы системы")
+                        println("Последняя строка - столбец свободных членов")
+                        print("Введите имя файла: ")
+                        try {
+                            val fileReader = Scanner(File(scanner.nextLine()))
+                            inputReader.fileCoefficientReader(fileReader)
+                            fileReader.close()
                             coefficients = inputReader.coefficients
                             eps = inputReader.eps
                             size = inputReader.size
                             maxIterations = inputReader.maxIterations
-                            break@loop
+                            break
+                        } catch (e: Exception) {
+                            println("Возникла ошибка при вводе из файла. Проверьте имя файла и его формат.")
                         }
-                        MenuInputType.FILE -> {
-                            println(DIVIDER)
-                            println("Вы выбрали ввод из файла")
-                            while (true) {
-                                println("Формат файла")
-                                println("Первая строчка - точность (eps)")
-                                println("Вторая строчка - размер матрицы (n <= 20)")
-                                println("Третья строчка - максимальное количество итераций (0 - без ограничений)")
-                                println("Следующие n строк - n элементов матрицы системы")
-                                println("Последняя строка - столбец свободных членов")
-                                print("Введите имя файла: ")
-                                try {
-                                    val fileReader = Scanner(File(scanner.nextLine()))
-                                    inputReader.fileCoefficientReader(fileReader)
-                                    fileReader.close()
-                                    coefficients = inputReader.coefficients
-                                    eps = inputReader.eps
-                                    size = inputReader.size
-                                    maxIterations = inputReader.maxIterations
-                                    break@loop
-                                } catch (e: Exception) {
-                                    println("Возникла ошибка при вводе из файла. Проверьте имя файла и его формат.")
-                                }
-                            }
-                        }
-                        MenuInputType.RANDOM -> {
-                            println(DIVIDER)
-                            println("Вы выбрали заполнение матрицы случайными коэффициентами")
-                            inputReader.randomCoefficients(scanner)
-                            coefficients = inputReader.coefficients
-                            eps = inputReader.eps
-                            size = inputReader.size
-                            maxIterations = inputReader.maxIterations
-                            break@loop
-                        }
-                        MenuInputType.EXIT -> {
-                            println("Выход из программы...")
-                            exitProcess(0)
-                        }
-                        else -> throw Exception()
                     }
-                } catch (e: Exception) {
-                    println("Вы ввели неверное число. Попробуйте еще раз.")
+                }
+                MenuInputType.RANDOM -> {
+                    println(DIVIDER)
+                    println("Вы выбрали заполнение матрицы случайными коэффициентами")
+                    inputReader.randomCoefficients(scanner)
+                    coefficients = inputReader.coefficients
+                    eps = inputReader.eps
+                    size = inputReader.size
+                    maxIterations = inputReader.maxIterations
+                }
+                MenuInputType.EXIT -> {
+                    println("Выход из программы...")
+                    exitProcess(0)
                 }
             }
             println(DIVIDER)

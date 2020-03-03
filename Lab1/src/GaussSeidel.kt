@@ -17,10 +17,10 @@
 import kotlin.math.abs
 
 class GaussSeidel(
-    private val eps: Double,
-    private var input: Array<DoubleArray>,
-    private val size: Int,
-    private val maxIterations: Int) {
+        private val eps: Double,
+        private var input: Array<DoubleArray>,
+        private val size: Int,
+        private val maxIterations: Int) {
 
     var counter: Int = 0
     val accuracy: DoubleArray = DoubleArray(size)
@@ -109,6 +109,7 @@ class GaussSeidel(
         val previous: Array<Double> = Array(size){0.0}
         val current: Array<Double> = inputRight.copyOf()
         do {
+
             counter++
             for (i in 0 until size) {
                 previous[i] = current[i]
