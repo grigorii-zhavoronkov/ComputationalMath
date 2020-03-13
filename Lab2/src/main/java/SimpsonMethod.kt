@@ -47,7 +47,8 @@ class SimpsonMethod(
             sum4 += function.setVariable("x", bottomLimit + h*i).evaluate()
             sum2 += function.setVariable("x", bottomLimit + h*(i+1)).evaluate()
         }
-        return h/3 * (function.setVariable("x", bottomLimit).evaluate() + 4  * sum4 + 2 * sum2)
+        sum2 -= function.setVariable("x", upperLimit).evaluate()
+        return h/3 * (function.setVariable("x", bottomLimit).evaluate() + 4  * sum4 + 2 * sum2 + function.setVariable("x", upperLimit).evaluate())
     }
 
 }
