@@ -31,11 +31,11 @@ class SimpsonMethod(
         var currentValue = simpson(n)
         do {
             val previousValue = currentValue
-            n*=2
+            n *= 2
             currentValue = simpson(n)
             accuracy = abs(currentValue - previousValue)
         } while (accuracy > eps)
-        accuracy /= 15 // правило Рунге
+        accuracy /= 15
         answer = currentValue
     }
 

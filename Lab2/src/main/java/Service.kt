@@ -37,10 +37,10 @@ class Service {
 
     init {
         formulas.add("sin(x)")
-        formulas.add("sin(x)")
-        formulas.add("sin(x)")
-        formulas.add("sin(x)")
-        formulas.add("sin(x)")
+        formulas.add("8+2x-x^2")
+        formulas.add("sin^2(x)")
+        formulas.add("2*x^2")
+        formulas.add("x/sqrt(x^4+16)")
         formulas.trimToSize()
     }
 
@@ -76,11 +76,15 @@ class Service {
             val upperLimit = inputReader.readInputDouble("Введите верхний предел интегрирования")
             val eps = inputReader.readInputDouble("Введите точность")
             val solver = SimpsonMethod(formula, bottomLimit, upperLimit, eps)
-            solver.solve()
-            println(DIVIDER)
-            println("Количество разбиений: ${solver.n}")
-            println("Погрешность вычислений: +-${solver.accuracy}")
-            println("Ответ: ${solver.answer}")
+            try {
+                solver.solve()
+                println(DIVIDER)
+                println("Количество разбиений: ${solver.n}")
+                println("Погрешность вычислений: +-${solver.accuracy}")
+                println("Ответ: ${solver.answer}")
+            } catch (e: Exception) {
+                println("Интеграл не может быть вычислен. Попробуйте снова.")
+            }
         } while (inputType != InputType.EXIT)
     }
 }
