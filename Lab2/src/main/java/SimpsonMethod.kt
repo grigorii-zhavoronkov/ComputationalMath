@@ -50,5 +50,4 @@ class SimpsonMethod(
         sum2 -= function.setVariable("x", upperLimit).evaluate()
         return h/3 * (function.setVariable("x", bottomLimit).evaluate() + 4  * sum4 + 2 * sum2 + function.setVariable("x", upperLimit).evaluate())
     }
-
 }
