@@ -5,8 +5,7 @@ import javax.swing.*
 import javax.swing.JFrame.EXIT_ON_CLOSE
 
 class MainMenuView {
-
-    val frame = JFrame() // Главный фрейм
+    val frame = JFrame()
 
     val fileInputButton = JButton("Чтение точек из файла")
     val pointsInputButton = JButton("Ввод точек вручную")
@@ -34,9 +33,7 @@ class MainMenuView {
     }
 
     private fun addComponentsToPane(pane: Container) {
-        val baseLayout = GridLayout(0, 1)
-
-        pane.layout = baseLayout
+        pane.layout = GridBagLayout()
 
         val pointInputPanel = JPanel()
         val pointLayout = GridBagLayout()
@@ -57,22 +54,28 @@ class MainMenuView {
         pointConstraints.gridwidth = 2
         pointInputPanel.add(pointsInputButton, pointConstraints)
 
-        pointInputPanel.border = BorderFactory.createEmptyBorder(20, 10, 0, 10)
+        pointInputPanel.border = BorderFactory.createEmptyBorder(30, 10, 10, 10)
 
         val orLabelPanel = JPanel()
         val orLabelLayout = FlowLayout()
         orLabelPanel.layout = orLabelLayout
         orLabelPanel.add(orLabel)
-        orLabelPanel.border = BorderFactory.createEmptyBorder(10, 0, 10, 0)
 
         val fileButtonPanel = JPanel()
         val fileButtonLayout = FlowLayout()
         fileButtonPanel.layout = fileButtonLayout
         fileButtonPanel.add(fileInputButton)
-        //fileButtonPanel.border = BorderFactory.createEmptyBorder(0, 0, 20, 0)
 
-        pane.add(pointInputPanel)
-        pane.add(orLabelPanel)
-        pane.add(fileButtonPanel)
+        val baseConstraints = GridBagConstraints()
+        baseConstraints.fill = GridBagConstraints.HORIZONTAL
+        baseConstraints.gridx = 0
+        baseConstraints.gridy = 0
+        pane.add(pointInputPanel, baseConstraints)
+
+        baseConstraints.gridy = 1
+        pane.add(orLabelPanel, baseConstraints)
+
+        baseConstraints.gridy = 2
+        pane.add(fileButtonPanel, baseConstraints)
     }
 }

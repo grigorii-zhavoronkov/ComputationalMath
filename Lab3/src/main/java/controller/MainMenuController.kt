@@ -6,16 +6,20 @@ import view.PointsInputView
 
 class MainMenuController(
         val model: ApproximationMethod,
-        val view: MainMenuView) {
+        val view: MainMenuView): Controller {
 
-    init {
-        view.fileInputButton.addActionListener({e -> {
-
-        }})
+    override fun addActionListeners() {
+        view.fileInputButton.addActionListener {
+            run {
+                // TODO: fileInputView implementation
+            }
+        }
         view.pointsInputButton.addActionListener {
             run {
                 view.frame.isEnabled = false
-                val pointsInputView = PointsInputView()
+                val pointsInputView = PointsInputView(view.frame, view.nInput.value as Int)
+                val pointsInputController = PointsInputController(pointsInputView, model)
+                pointsInputController.addActionListeners()
             }
         }
     }

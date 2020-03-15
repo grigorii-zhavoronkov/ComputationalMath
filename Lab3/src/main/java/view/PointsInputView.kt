@@ -1,10 +1,106 @@
 package view
 
-import javax.swing.JFrame
-import javax.swing.JTable
-import javax.swing.table.TableModel
+import java.awt.*
+import java.util.*
+import javax.swing.*
 
-class PointsInputView {
+class PointsInputView(val parent: JFrame, val rowSize: Int) {
     val frame = JFrame("Ввод точек")
-    val table = JTable()
+    lateinit var table: JTable
+        private set
+
+    val formulaField = JTextField()
+
+    val linearApproximation = JRadioButton("Линейная аппроксимация")
+    val squareApproximation = JRadioButton("Квадратичная аппроксимация")
+    val cubeApproximation = JRadioButton("Кубическая аппроксимация")
+    val powerApproximation = JRadioButton("Степенная аппроксимация")
+    val hyperbolaApproximation = JRadioButton("Гиперболическая аппроксимация")
+    val indicativeApproximation = JRadioButton("Показательная аппроксимация")
+    val logApproximation = JRadioButton("Логарифмическая аппроксимация")
+    val expApproximation = JRadioButton("Экспоненциальная аппроксимация")
+
+    val backButton = JButton("Назад")
+    val nextButton = JButton("Построить график")
+
+    init {
+        initTable(rowSize)
+        addComponentsToPane(frame.contentPane)
+        addSettings()
+    }
+
+    private fun addSettings() {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
+
+        frame.isResizable = false
+        frame.defaultCloseOperation = JDialog.DISPOSE_ON_CLOSE
+        frame.pack()
+        frame.isAlwaysOnTop = true
+        frame.isVisible = true
+    }
+
+    private fun addComponentsToPane(pane: Container) {
+        val base = JPanel()
+        base.layout = GridBagLayout()
+        val baseConstraints = GridBagConstraints()
+
+        val tablePanel = JPanel()
+        tablePanel.layout = FlowLayout()
+        tablePanel.border = BorderFactory.createEmptyBorder(20, 10, 0, 10)
+        val tableScrollPane = JScrollPane(table)
+        tableScrollPane.preferredSize = Dimension(300, 300)
+        tablePanel.add(tableScrollPane)
+
+        val functionInputPanel = JPanel()
+        functionInputPanel.layout = FlowLayout()
+        formulaField.preferredSize = Dimension(110, 20)
+        functionInputPanel.add(JLabel("Аппроксимирующая формула:"))
+        functionInputPanel.add(formulaField)
+
+        val functionTypePanel = JPanel()
+        val functionButtonGroup = ButtonGroup()
+
+
+        val buttonPanel = JPanel()
+        buttonPanel.layout = GridBagLayout()
+
+        val buttonConstraints = GridBagConstraints()
+
+        buttonConstraints.fill = GridBagConstraints.HORIZONTAL
+        buttonConstraints.gridx = 0
+        buttonConstraints.gridy = 0
+        buttonPanel.add(backButton, buttonConstraints)
+
+        buttonConstraints.gridx = 2
+        buttonConstraints.gridy = 0
+        buttonPanel.add(nextButton, buttonConstraints)
+
+        baseConstraints.fill = GridBagConstraints.HORIZONTAL
+        baseConstraints.gridx = 0
+        baseConstraints.gridy = 0
+        base.add(tablePanel, baseConstraints)
+
+        baseConstraints.gridy = 1
+        base.add(functionInputPanel, baseConstraints)
+
+        baseConstraints.gridy = 2
+        base.add(buttonPanel, baseConstraints)
+
+        pane.add(base)
+    }
+
+    private fun initTable(rowSize: Int) {
+        val columnNames = Vector<String>(2)
+        columnNames.addElement("X")
+        columnNames.addElement("Y")
+        val data = Vector<Vector<Int>>(rowSize)
+        for (i in 0 until rowSize) {
+            val preData = Vector<Int>(2)
+            preData.addElement(0)
+            preData.addElement(0)
+            data.addElement(preData)
+        }
+
+        table = JTable(data, columnNames)
+    }
 }

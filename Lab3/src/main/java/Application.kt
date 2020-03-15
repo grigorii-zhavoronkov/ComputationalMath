@@ -6,4 +6,5 @@ fun main(args: Array<String>) {
     val mainMenuView = MainMenuView()
     val approximationMethod = ApproximationMethod()
     val mainMenuController = MainMenuController(approximationMethod, mainMenuView)
+    mainMenuController.addActionListeners()
 }
