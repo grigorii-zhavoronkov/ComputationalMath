@@ -5,8 +5,6 @@ import net.objecthunter.exp4j.ExpressionBuilder
 
 class ApproximationMethod {
 
-    lateinit var formula: Expression
-
     enum class Type {
         LINEAR,
         SQUARE,
@@ -18,8 +16,8 @@ class ApproximationMethod {
         EXP
     }
 
-    fun evaluate(size: Int, data: Array<DoubleArray>, type: Type) {
-        when (type) {
+    fun evaluate(size: Int, data: Array<DoubleArray>, type: Type): Expression {
+        return when (type) {
             Type.LINEAR -> linear(size, data)
             Type.SQUARE -> square(size, data)
             Type.CUBE -> cube(size, data)
@@ -29,10 +27,9 @@ class ApproximationMethod {
             Type.LOG -> log(size, data)
             Type.EXP -> exp(size, data)
         }
-        //TODO: store data
     }
 
-    private fun linear(size: Int, data: Array<DoubleArray>) {
+    private fun linear(size: Int, data: Array<DoubleArray>): Expression {
         var sumx = 0.0
         var sumy = 0.0
         var sumxy = 0.0
@@ -45,16 +42,14 @@ class ApproximationMethod {
         }
         val a: Double = (sumx*sumy - size*sumxy) / (sumx * sumx - size*sumx2)
         val b: Double = (sumx*sumxy - sumx2*sumy) / (sumx*sumx - size * sumx2)
-        println(a)
-        println(b)
         if (a.isFinite() && b.isFinite()) {
-            formula = ExpressionBuilder(a.toString() + "x" + b.toString()).variable("x").build()
+            return ExpressionBuilder("$a*x+$b").variable("x").build()
         } else {
             throw Exception()
         }
     }
 
-    private fun square(size: Int, data: Array<DoubleArray>) {
+    private fun square(size: Int, data: Array<DoubleArray>): Expression {
         var sumx = 0.0
         var sumy = 0.0
         var sumx2 = 0.0
@@ -81,29 +76,30 @@ class ApproximationMethod {
         val a = da/d
         val b = db/d
         val c = dc/d
+        return ExpressionBuilder("$a*x^2 + $b*x + $c").variable("x").build()
     }
 
-    private fun cube(size: Int, data: Array<DoubleArray>) {
-
+    private fun cube(size: Int, data: Array<DoubleArray>): Expression {
+        TODO("REALIZE")
     }
 
-    private fun power(size: Int, data: Array<DoubleArray>) {
-
+    private fun power(size: Int, data: Array<DoubleArray>): Expression {
+        TODO("REALIZE")
     }
 
-    private fun hyperbola(size: Int, data: Array<DoubleArray>) {
-
+    private fun hyperbola(size: Int, data: Array<DoubleArray>): Expression {
+        TODO("REALIZE")
     }
 
-    private fun indicative(size: Int, data: Array<DoubleArray>) {
-
+    private fun indicative(size: Int, data: Array<DoubleArray>): Expression {
+        TODO("REALIZE")
     }
 
-    private fun log(size: Int, data: Array<DoubleArray>) {
-
+    private fun log(size: Int, data: Array<DoubleArray>): Expression {
+        TODO("REALIZE")
     }
 
-    private fun exp(size: Int, data: Array<DoubleArray>) {
-
+    private fun exp(size: Int, data: Array<DoubleArray>): Expression {
+        TODO("REALIZE")
     }
 }

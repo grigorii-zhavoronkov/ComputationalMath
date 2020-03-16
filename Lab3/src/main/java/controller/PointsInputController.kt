@@ -78,11 +78,13 @@ class PointsInputController(val view: PointsInputView,
             }
 
             if (successValidation) {
-                // create next view, evaluate
                 try {
-                    model.evaluate(view.rowSize, data, methodType)
+                    val plotView = PlotView(data,
+                            model.evaluate(view.rowSize, data, methodType),
+                            model.evaluate(view.rowSize, data, methodType),
+                            view.frame)
+                    PlotController(plotView)
                     view.frame.isVisible = false
-                    val plotView = PlotView(data, model.formula, model.formula, view.frame)
                 } catch (e: Exception) {
                     e.printStackTrace()
                     JOptionPane.showMessageDialog(view.frame,
@@ -96,8 +98,6 @@ class PointsInputController(val view: PointsInputView,
                         "Ошибка валидации",
                         JOptionPane.WARNING_MESSAGE)
             }
-            // TODO: validate data
-            // TODO: parse from table to Array<DoubleArray>
         }
     }
 

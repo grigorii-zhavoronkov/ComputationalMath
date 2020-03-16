@@ -10,7 +10,7 @@ class MainMenuView {
     val fileInputButton = JButton("Чтение точек из файла")
     val pointsInputButton = JButton("Ввод точек вручную")
 
-    private val nSpinnerModel = SpinnerNumberModel(3, 3, 100, 1)
+    private val nSpinnerModel = SpinnerNumberModel(4, 4, 100, 1)
     val nInput = JSpinner(nSpinnerModel)
 
     val nLabel = JLabel("Введите N (количество точек):")
