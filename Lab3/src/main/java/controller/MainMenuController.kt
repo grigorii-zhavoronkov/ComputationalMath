@@ -4,9 +4,11 @@ import model.ApproximationMethod
 import view.MainMenuView
 import view.PointsInputView
 
-class MainMenuController(
-        val model: ApproximationMethod,
-        val view: MainMenuView): Controller {
+class MainMenuController(val view: MainMenuView): Controller {
+
+    init {
+        addActionListeners()
+    }
 
     override fun addActionListeners() {
         view.fileInputButton.addActionListener {
@@ -18,8 +20,7 @@ class MainMenuController(
             run {
                 view.frame.isEnabled = false
                 val pointsInputView = PointsInputView(view.frame, view.nInput.value as Int)
-                val pointsInputController = PointsInputController(pointsInputView, model)
-                pointsInputController.addActionListeners()
+                PointsInputController(pointsInputView, ApproximationMethod())
             }
         }
     }

@@ -9,8 +9,6 @@ class PointsInputView(val parent: JFrame, val rowSize: Int) {
     lateinit var table: JTable
         private set
 
-    val formulaField = JTextField()
-
     val linearApproximation = JRadioButton("Линейная аппроксимация")
     val squareApproximation = JRadioButton("Квадратичная аппроксимация")
     val cubeApproximation = JRadioButton("Кубическая аппроксимация")
@@ -51,15 +49,30 @@ class PointsInputView(val parent: JFrame, val rowSize: Int) {
         tableScrollPane.preferredSize = Dimension(300, 300)
         tablePanel.add(tableScrollPane)
 
-        val functionInputPanel = JPanel()
-        functionInputPanel.layout = FlowLayout()
-        formulaField.preferredSize = Dimension(110, 20)
-        functionInputPanel.add(JLabel("Аппроксимирующая формула:"))
-        functionInputPanel.add(formulaField)
-
         val functionTypePanel = JPanel()
-        val functionButtonGroup = ButtonGroup()
+        functionTypePanel.layout = GridLayout(0, 1)
+        functionTypePanel.border = BorderFactory.createEmptyBorder(10, 0, 10, 0)
 
+        val functionButtonGroup = ButtonGroup()
+        functionButtonGroup.add(linearApproximation)
+        functionButtonGroup.add(squareApproximation)
+        functionButtonGroup.add(cubeApproximation)
+        functionButtonGroup.add(powerApproximation)
+        functionButtonGroup.add(hyperbolaApproximation)
+        functionButtonGroup.add(indicativeApproximation)
+        functionButtonGroup.add(logApproximation)
+        functionButtonGroup.add(expApproximation)
+
+        functionTypePanel.add(linearApproximation)
+        functionTypePanel.add(squareApproximation)
+        functionTypePanel.add(cubeApproximation)
+        functionTypePanel.add(powerApproximation)
+        functionTypePanel.add(hyperbolaApproximation)
+        functionTypePanel.add(indicativeApproximation)
+        functionTypePanel.add(logApproximation)
+        functionTypePanel.add(expApproximation)
+
+        linearApproximation.isSelected = true
 
         val buttonPanel = JPanel()
         buttonPanel.layout = GridBagLayout()
@@ -81,7 +94,7 @@ class PointsInputView(val parent: JFrame, val rowSize: Int) {
         base.add(tablePanel, baseConstraints)
 
         baseConstraints.gridy = 1
-        base.add(functionInputPanel, baseConstraints)
+        base.add(functionTypePanel, baseConstraints)
 
         baseConstraints.gridy = 2
         base.add(buttonPanel, baseConstraints)
@@ -93,11 +106,11 @@ class PointsInputView(val parent: JFrame, val rowSize: Int) {
         val columnNames = Vector<String>(2)
         columnNames.addElement("X")
         columnNames.addElement("Y")
-        val data = Vector<Vector<Int>>(rowSize)
+        val data = Vector<Vector<String>>(rowSize)
         for (i in 0 until rowSize) {
-            val preData = Vector<Int>(2)
-            preData.addElement(0)
-            preData.addElement(0)
+            val preData = Vector<String>(2)
+            preData.addElement("0")
+            preData.addElement("0")
             data.addElement(preData)
         }
 
