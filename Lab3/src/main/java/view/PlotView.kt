@@ -40,6 +40,8 @@ class PlotView(val points: Array<DoubleArray>,
     private var coef by Delegates.notNull<Double>()
     private val stepX = 1
 
+    lateinit var plotPane: PlotPane
+
     init {
         calculateBoundsAndCoefficients()
         addComponentsToPane(frame.contentPane)
@@ -63,7 +65,8 @@ class PlotView(val points: Array<DoubleArray>,
         paneConstraints.gridy = 0
         val expression1 = ExpressionBuilder(formula1).variable("x").build()
         val expression2 = ExpressionBuilder(formula2).variable("x").build()
-        pane.add(PlotPane(width, height, coef, width/2 - offsetX, height/2 - offsetY, stepX, dropId, expression1, expression2, points), paneConstraints)
+        plotPane = PlotPane(width, height, coef, width/2 - offsetX, height/2 - offsetY, stepX, dropId, expression1, expression2, points)
+        pane.add(plotPane, paneConstraints)
 
         val labelsPanel = JPanel()
         val labelsConstrains = GridBagConstraints()
@@ -103,16 +106,16 @@ class PlotView(val points: Array<DoubleArray>,
 
     }
 
-    private class PlotPane(val _width: Int,
-                           val _height: Int,
-                           val coef: Double,
-                           val centerX: Int,
-                           val centerY: Int,
-                           val stepX: Int,
-                           val dropId: Int,
-                           val formula1: Expression,
-                           val formula2: Expression,
-                           val points: Array<DoubleArray>): JPanel() {
+    class PlotPane(val _width: Int,
+                   val _height: Int,
+                   var coef: Double,
+                   val centerX: Int,
+                   val centerY: Int,
+                   val stepX: Int,
+                   val dropId: Int,
+                   val formula1: Expression,
+                   val formula2: Expression,
+                   val points: Array<DoubleArray>): JPanel() {
 
         override fun getPreferredSize(): Dimension {
             return Dimension(_width, _height)

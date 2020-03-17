@@ -229,7 +229,7 @@ class ApproximationMethod {
             sumxy = ln(x) * ln(y)
         }
         val b = format.format((size * sumxy - sumx * sumy) / (size * sumx2 - sumx.pow(2))).toDouble()
-        val a = format.format(kotlin.math.exp(1/size * sumy - b/size * sumx)).toDouble()
+        val a = format.format(kotlin.math.exp(1.0/size * sumy - b/size * sumx)).toDouble()
         if (a.isFinite() && b.isFinite()) {
             return "$a * x ^ $b"
         } else {
@@ -252,7 +252,7 @@ class ApproximationMethod {
         }
 
         val b = format.format((size * sumyx - sumx * sumy) / (size * sumx2 - sumx.pow(2))).toDouble()
-        val a = format.format(1/size * sumy - b/size * sumx).toDouble()
+        val a = format.format(1.0/size * sumy - b/size * sumx).toDouble()
         if (a.isFinite() && b.isFinite()) {
             return "$a + $b/x"
         } else {
@@ -275,7 +275,7 @@ class ApproximationMethod {
         }
 
         val b = format.format(kotlin.math.exp((size * sumxlny - sumx * sumlny) / (size * sumx2 - sumx.pow(2)))).toDouble()
-        val a = format.format(kotlin.math.exp(1/size * sumlny - ln(b)/size * sumx)).toDouble()
+        val a = format.format(kotlin.math.exp(1.0/size * sumlny - ln(b)/size * sumx)).toDouble()
 
         if (a.isFinite() && b.isFinite()) {
             return "$a * $b ^ x"
@@ -298,8 +298,8 @@ class ApproximationMethod {
             sumln2x += ln(x).pow(2)
         }
 
-        val b = format.format((size * sumylnx - sumlnx * sumy) / (size * sumln2x * sumlnx.pow(2))).toDouble()
-        val a = format.format(1/size * sumy - b/size * sumlnx).toDouble()
+        val b = format.format((size * sumylnx - sumlnx * sumy) / (size * sumln2x - sumlnx.pow(2))).toDouble()
+        val a = format.format(1.0/size * sumy - b/size * sumlnx).toDouble()
 
         if (a.isFinite() && b.isFinite()) {
             return "$a + $b * log(x)"
@@ -324,7 +324,7 @@ class ApproximationMethod {
         }
 
         val b = format.format((size * sumxlny - sumx * sumlny) / (size * sumx2 - sumx.pow(2))).toDouble()
-        val a = format.format(1/size * sumlny - b/size * sumx).toDouble()
+        val a = format.format(1.0/size * sumlny - b/size * sumx).toDouble()
         if (a.isFinite() && b.isFinite()) {
             return "e^($a + $b * x)"
         } else {
