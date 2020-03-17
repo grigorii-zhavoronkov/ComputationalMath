@@ -7,10 +7,7 @@ import java.lang.Exception
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
-import javax.swing.JFrame
-import javax.swing.JLabel
-import javax.swing.JPanel
-import javax.swing.UIManager
+import javax.swing.*
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -31,6 +28,11 @@ class PlotView(val points: Array<DoubleArray>,
 
     var maxY = Double.MIN_VALUE
     var maxX = Double.MIN_VALUE
+
+    val calculationButton = JButton("Узнать значение")
+    val calculationX = JTextField()
+    val formula1CalculationResult = JLabel()
+    val formula2CalculationResult = JLabel()
 
     private val width = 640
     private val height = 640
@@ -60,6 +62,7 @@ class PlotView(val points: Array<DoubleArray>,
     private fun addComponentsToPane(pane: Container) {
         pane.layout = GridBagLayout()
         val paneConstraints = GridBagConstraints()
+        paneConstraints.anchor = GridBagConstraints.NORTHWEST
         paneConstraints.fill = GridBagConstraints.HORIZONTAL
         paneConstraints.gridx = 0
         paneConstraints.gridy = 0
@@ -71,6 +74,7 @@ class PlotView(val points: Array<DoubleArray>,
         val labelsPanel = JPanel()
         val labelsConstrains = GridBagConstraints()
         labelsPanel.layout = GridBagLayout()
+        labelsConstrains.anchor = GridBagConstraints.NORTHWEST
         labelsConstrains.fill = GridBagConstraints.HORIZONTAL
         labelsConstrains.gridx = 0
         labelsConstrains.gridy = 0
@@ -82,8 +86,37 @@ class PlotView(val points: Array<DoubleArray>,
         labelsConstrains.gridy = 2
         labelsPanel.add(JLabel("Исключенная точка: (${formatter.format(points[dropId][0])} : ${formatter.format(points[dropId][1])})"), labelsConstrains)
 
+        val calculationPanel = JPanel()
+        val calculationPanelConstraints = GridBagConstraints()
+        calculationPanel.layout = GridBagLayout()
+        calculationPanelConstraints.fill = GridBagConstraints.HORIZONTAL
+        calculationPanelConstraints.anchor = GridBagConstraints.NORTHWEST
+
+        val inputPanel = JPanel()
+        inputPanel.layout = FlowLayout(FlowLayout.LEFT, 5, 5)
+        inputPanel.add(JLabel("Введите X:"))
+        calculationX.columns = 20
+        inputPanel.add(calculationX)
+
+        calculationPanelConstraints.gridy = 0
+        calculationPanelConstraints.gridx = 0
+        calculationPanel.add(inputPanel)
+
+        calculationPanelConstraints.gridy = 1
+        calculationPanelConstraints.gridx = 0
+        calculationPanel.add(calculationButton, calculationPanelConstraints)
+
+        calculationPanelConstraints.gridy = 2
+        calculationPanel.add(formula1CalculationResult, calculationPanelConstraints)
+
+        calculationPanelConstraints.gridy = 3
+        calculationPanel.add(formula2CalculationResult, calculationPanelConstraints)
+
         paneConstraints.gridy = 1
         pane.add(labelsPanel, paneConstraints)
+
+        paneConstraints.gridy = 2
+        pane.add(calculationPanel, paneConstraints)
     }
 
     private fun calculateBoundsAndCoefficients() {
