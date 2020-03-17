@@ -34,8 +34,8 @@ class PlotView(val points: Array<DoubleArray>,
 
     private val width = 640
     private val height = 640
-    private val offsetX = 20
-    private val offsetY = 20
+    var offsetX = 20
+    var offsetY = 20
 
     private var coef by Delegates.notNull<Double>()
     private val stepX = 1
@@ -109,8 +109,8 @@ class PlotView(val points: Array<DoubleArray>,
     class PlotPane(val _width: Int,
                    val _height: Int,
                    var coef: Double,
-                   val centerX: Int,
-                   val centerY: Int,
+                   var centerX: Int,
+                   var centerY: Int,
                    val stepX: Int,
                    val dropId: Int,
                    val formula1: Expression,
@@ -148,7 +148,11 @@ class PlotView(val points: Array<DoubleArray>,
             var prevX = -centerX / coef
             var prevY1 = -formula1.setVariable("x", -centerX/coef).evaluate()
             var prevY2 = -formula2.setVariable("x", -centerX/coef).evaluate()
-            for (x in -centerX until centerX step stepX) {
+
+            val fromX = -centerX
+            val toX = abs(centerX) + _width
+
+            for (x in fromX until toX step stepX) {
                 val tx = x / coef
                 var ty1: Double?
                 var ty2: Double?
