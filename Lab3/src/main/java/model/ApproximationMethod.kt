@@ -225,8 +225,8 @@ class ApproximationMethod {
             val y = data[i][1]
             sumx += ln(x)
             sumy += ln(y)
-            sumx2 = ln(x).pow(2)
-            sumxy = ln(x) * ln(y)
+            sumx2 += ln(x).pow(2)
+            sumxy += ln(x) * ln(y)
         }
         val b = format.format((size * sumxy - sumx * sumy) / (size * sumx2 - sumx.pow(2))).toDouble()
         val a = format.format(kotlin.math.exp(1.0/size * sumy - b/size * sumx)).toDouble()
