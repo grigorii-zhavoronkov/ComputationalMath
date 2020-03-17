@@ -1,12 +1,17 @@
 package model
 
-import net.objecthunter.exp4j.Expression
-import net.objecthunter.exp4j.ExpressionBuilder
+import java.math.RoundingMode
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.*
 import kotlin.math.abs
 import kotlin.math.ln
 import kotlin.math.pow
 
 class ApproximationMethod {
+
+    val decimalFormatSymbols = DecimalFormatSymbols(Locale.GERMAN)
+    lateinit var format: DecimalFormat
 
     enum class Type {
         LINEAR,
@@ -19,7 +24,10 @@ class ApproximationMethod {
         EXP
     }
 
-    fun evaluate(size: Int, data: Array<DoubleArray>, type: Type): Expression {
+    fun evaluate(size: Int, data: Array<DoubleArray>, type: Type): String {
+        decimalFormatSymbols.decimalSeparator = '.'
+        format = DecimalFormat("#.#####", decimalFormatSymbols)
+        format.roundingMode = RoundingMode.CEILING
         return when (type) {
             Type.LINEAR -> linear(size, data)
             Type.SQUARE -> square(size, data)
@@ -32,7 +40,7 @@ class ApproximationMethod {
         }
     }
 
-    private fun linear(size: Int, data: Array<DoubleArray>): Expression {
+    private fun linear(size: Int, data: Array<DoubleArray>): String {
         var sumx = 0.0
         var sumy = 0.0
         var sumxy = 0.0
@@ -43,16 +51,16 @@ class ApproximationMethod {
             sumxy += data[i][0] * data[i][1]
             sumx2 += data[i][0] * data[i][0]
         }
-        val a: Double = (sumx*sumy - size*sumxy) / (sumx.pow(2) - size * sumx2)
-        val b: Double = (sumx*sumxy - sumx2*sumy) / (sumx.pow(2) - size * sumx2)
+        val a: Double = format.format((sumx*sumy - size*sumxy) / (sumx.pow(2) - size * sumx2)).toDouble()
+        val b: Double = format.format((sumx*sumxy - sumx2*sumy) / (sumx.pow(2) - size * sumx2)).toDouble()
         if (a.isFinite() && b.isFinite()) {
-            return ExpressionBuilder("$a*x+$b").variable("x").build()
+            return "$a*x+$b"
         } else {
             throw Exception()
         }
     }
 
-    private fun square(size: Int, data: Array<DoubleArray>): Expression {
+    private fun square(size: Int, data: Array<DoubleArray>): String {
         var sumx = 0.0
         var sumy = 0.0
         var sumx2 = 0.0
@@ -104,17 +112,17 @@ class ApproximationMethod {
         matrix[1][2] = sumxy
         matrix[2][2] = sumx2y
         val dc = determinant(matrix)
-        val a = da/d
-        val b = db/d
-        val c = dc/d
+        val a = format.format(da/d).toDouble()
+        val b = format.format(db/d).toDouble()
+        val c = format.format(dc/d).toDouble()
         if (a.isFinite() && b.isFinite() && c.isFinite()) {
-            return ExpressionBuilder("$a*x^2 + $b*x + $c").variable("x").build()
+            return "$a*x^2 + $b*x + $c"
         } else {
             throw Exception()
         }
     }
 
-    private fun cube(size: Int, data: Array<DoubleArray>): Expression {
+    private fun cube(size: Int, data: Array<DoubleArray>): String {
         var sumx = 0.0
         var sumx2 = 0.0
         var sumx3 = 0.0
@@ -195,19 +203,19 @@ class ApproximationMethod {
         matrix[3][3] = sumx3y
         val dd = determinant(matrix)
 
-        val pa = da/d
-        val pb = db/d
-        val pc = dc/d
-        val pd = dd/d
+        val pa = format.format(da/d).toDouble()
+        val pb = format.format(db/d).toDouble()
+        val pc = format.format(dc/d).toDouble()
+        val pd = format.format(dd/d).toDouble()
 
         if (pa.isFinite() && pb.isFinite() && pc.isFinite() && pd.isFinite()) {
-            return ExpressionBuilder("$pa * x^3 + $pb * x^2 + $pc * x + $pd").variable("x").build()
+            return "$pa * x^3 + $pb * x^2 + $pc * x + $pd"
         } else {
             throw Exception()
         }
     }
 
-    private fun power(size: Int, data: Array<DoubleArray>): Expression {
+    private fun power(size: Int, data: Array<DoubleArray>): String {
         var sumx = 0.0
         var sumx2 = 0.0
         var sumy = 0.0
@@ -220,16 +228,16 @@ class ApproximationMethod {
             sumx2 = ln(x).pow(2)
             sumxy = ln(x) * ln(y)
         }
-        val b = (size * sumxy - sumx * sumy) / (size * sumx2 - sumx.pow(2))
-        val a = kotlin.math.exp(1/size * sumy - b/size * sumx)
+        val b = format.format((size * sumxy - sumx * sumy) / (size * sumx2 - sumx.pow(2))).toDouble()
+        val a = format.format(kotlin.math.exp(1/size * sumy - b/size * sumx)).toDouble()
         if (a.isFinite() && b.isFinite()) {
-            return ExpressionBuilder("$a * x ^ $b").variable("x").build()
+            return "$a * x ^ $b"
         } else {
             throw Exception()
         }
     }
 
-    private fun hyperbola(size: Int, data: Array<DoubleArray>): Expression {
+    private fun hyperbola(size: Int, data: Array<DoubleArray>): String {
         var sumx = 0.0
         var sumx2 = 0.0
         var sumyx = 0.0
@@ -243,16 +251,16 @@ class ApproximationMethod {
             sumy += y
         }
 
-        val b = (size * sumyx - sumx * sumy) / (size * sumx2 - sumx.pow(2))
-        val a = 1/size * sumy - b/size * sumx
+        val b = format.format((size * sumyx - sumx * sumy) / (size * sumx2 - sumx.pow(2))).toDouble()
+        val a = format.format(1/size * sumy - b/size * sumx).toDouble()
         if (a.isFinite() && b.isFinite()) {
-            return ExpressionBuilder("$a + $b/x").variable("x").build()
+            return "$a + $b/x"
         } else {
             throw Exception()
         }
     }
 
-    private fun indicative(size: Int, data: Array<DoubleArray>): Expression {
+    private fun indicative(size: Int, data: Array<DoubleArray>): String {
         var sumx = 0.0
         var sumx2 = 0.0
         var sumlny = 0.0
@@ -266,17 +274,17 @@ class ApproximationMethod {
             sumxlny += x * ln(y)
         }
 
-        val b = kotlin.math.exp((size * sumxlny - sumx * sumlny) / (size * sumx2 - sumx.pow(2)))
-        val a = kotlin.math.exp(1/size * sumlny - ln(b)/size * sumx)
+        val b = format.format(kotlin.math.exp((size * sumxlny - sumx * sumlny) / (size * sumx2 - sumx.pow(2)))).toDouble()
+        val a = format.format(kotlin.math.exp(1/size * sumlny - ln(b)/size * sumx)).toDouble()
 
         if (a.isFinite() && b.isFinite()) {
-            return ExpressionBuilder("$a * $b ^ x").variable("x").build()
+            return "$a * $b ^ x"
         } else {
             throw Exception()
         }
     }
 
-    private fun log(size: Int, data: Array<DoubleArray>): Expression {
+    private fun log(size: Int, data: Array<DoubleArray>): String {
         var sumylnx = 0.0
         var sumlnx = 0.0
         var sumy = 0.0
@@ -290,17 +298,17 @@ class ApproximationMethod {
             sumln2x += ln(x).pow(2)
         }
 
-        val b = (size * sumylnx - sumlnx * sumy) / (size * sumln2x * sumlnx.pow(2))
-        val a = 1/size * sumy - b/size * sumlnx
+        val b = format.format((size * sumylnx - sumlnx * sumy) / (size * sumln2x * sumlnx.pow(2))).toDouble()
+        val a = format.format(1/size * sumy - b/size * sumlnx).toDouble()
 
         if (a.isFinite() && b.isFinite()) {
-            return ExpressionBuilder("$a + $b * log(x)").variable("x").build()
+            return "$a + $b * log(x)"
         } else {
             throw Exception()
         }
     }
 
-    private fun exp(size: Int, data: Array<DoubleArray>): Expression {
+    private fun exp(size: Int, data: Array<DoubleArray>): String {
         var sumxlny = 0.0
         var sumx = 0.0
         var sumlny = 0.0
@@ -315,46 +323,38 @@ class ApproximationMethod {
             sumx2 += x.pow(2)
         }
 
-        val b = (size * sumxlny - sumx * sumlny) / (size * sumx2 - sumx.pow(2))
-        val a = 1/size * sumlny - b/size * sumx
+        val b = format.format((size * sumxlny - sumx * sumlny) / (size * sumx2 - sumx.pow(2))).toDouble()
+        val a = format.format(1/size * sumlny - b/size * sumx).toDouble()
         if (a.isFinite() && b.isFinite()) {
-            return ExpressionBuilder("e^($a + $b * x)").variable("x").build()
+            return "e^($a + $b * x)"
         } else {
             throw Exception()
         }
     }
 
-    private fun determinant(matrix: Array<DoubleArray>): Double {
-        val eps = 1e-9
-        var det = 1.0
-        for (i in matrix.indices) {
-            var k = i
-            for (j in i+1 until matrix.size) {
-                if (abs(matrix[j][i]) > abs(matrix[k][i])) {
-                    k = j
-                }
-            }
-            if (abs(matrix[k][i]) < eps) {
-                return 0.0
-            }
-            val temp = matrix[i]
-            matrix[i] = matrix[k]
-            matrix[k] = temp
-            if (i != k) {
-                det = -det
-            }
-            det *= matrix[i][i]
-            for (j in i+1 until matrix.size) {
-                matrix[i][j] /= matrix[i][i]
-            }
-            for (j in matrix.indices) {
-                if (j != i && abs(matrix[j][i]) > eps) {
-                    for (l in i+1 until matrix.size) {
-                        matrix[j][l] -= matrix[i][l] * matrix[j][i]
-                    }
-                }
-            }
+    private fun determinant(a: Array<DoubleArray>): Double {
+        if (a.size == 1) {
+            return a[0][0]
         }
-        return det
+        if (a.size == 2) {
+            return a[0][0] * a[1][1] - a[0][1] * a[1][0]
+        }
+        var sum = 0.0
+        for (i in a.indices) {
+            val subArray = Array(a.size - 1) {DoubleArray(a.size - 1)}
+            var offsetColumn = 0
+            val sign = -1.0
+            for (row in 1 until a.size) {
+                for (column in 0 until a.size - 1) {
+                    if (column == i) {
+                        offsetColumn = 1
+                    }
+                    subArray[row - 1][column] = a[row][column + offsetColumn]
+                }
+                offsetColumn = 0
+            }
+            sum += sign.pow(i) * a[0][i] * determinant(subArray)
+        }
+        return sum
     }
 }

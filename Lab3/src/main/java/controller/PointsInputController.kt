@@ -1,6 +1,7 @@
 package controller
 
 import model.ApproximationMethod
+import model.PointFinder
 import view.PlotView
 import view.PointsInputView
 import java.awt.event.WindowAdapter
@@ -9,8 +10,7 @@ import javax.swing.JFrame
 import javax.swing.JOptionPane
 import javax.swing.table.DefaultTableModel
 
-class PointsInputController(val view: PointsInputView,
-                            val model: ApproximationMethod): Controller {
+class PointsInputController(val view: PointsInputView): Controller {
 
     init {
         addActionListeners()
@@ -79,10 +79,21 @@ class PointsInputController(val view: PointsInputView,
 
             if (successValidation) {
                 try {
-                    val plotView = PlotView(data,
-                            model.evaluate(view.rowSize, data, methodType),
-                            model.evaluate(view.rowSize, data, methodType),
-                            view.frame)
+                    val model = ApproximationMethod()
+                    val finder = PointFinder()
+                    val formula1 = model.evaluate(view.rowSize, data, methodType)
+                    val dropId = finder.findPointId(data, formula1)
+                    val copyData = Array(view.rowSize - 1) {DoubleArray(2)}
+                    var offset = 0
+                    for (i in data.indices) {
+                        if (i == dropId) {
+                            offset = 1
+                        } else {
+                            copyData[i - offset] = data[i]
+                        }
+                    }
+                    val formula2 = model.evaluate(view.rowSize - 1, copyData, methodType)
+                    val plotView = PlotView(data, dropId, formula1, formula2, view.frame)
                     PlotController(plotView)
                     view.frame.isVisible = false
                 } catch (e: Exception) {

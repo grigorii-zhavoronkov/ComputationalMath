@@ -1,6 +1,5 @@
 package controller
 
-import model.ApproximationMethod
 import view.MainMenuView
 import view.PointsInputView
 
@@ -20,7 +19,7 @@ class MainMenuController(val view: MainMenuView): Controller {
             run {
                 view.frame.isEnabled = false
                 val pointsInputView = PointsInputView(view.frame, view.nInput.value as Int)
-                PointsInputController(pointsInputView, ApproximationMethod())
+                PointsInputController(pointsInputView)
             }
         }
     }

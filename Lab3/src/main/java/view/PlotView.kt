@@ -1,8 +1,14 @@
 package view
 
 import net.objecthunter.exp4j.Expression
+import net.objecthunter.exp4j.ExpressionBuilder
 import java.awt.*
+import java.lang.Exception
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.*
 import javax.swing.JFrame
+import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.UIManager
 import kotlin.math.abs
@@ -11,11 +17,14 @@ import kotlin.math.min
 import kotlin.properties.Delegates
 
 class PlotView(val points: Array<DoubleArray>,
-               val expression1: Expression,
-               val expression2: Expression,
+               val dropId: Int,
+               val formula1: String,
+               val formula2: String,
                val parent: JFrame) {
 
     val frame = JFrame()
+
+    val formatter = DecimalFormat("#.#####", DecimalFormatSymbols(Locale.GERMAN))
 
     var minY = Double.MAX_VALUE
     var minX = Double.MAX_VALUE
@@ -25,8 +34,8 @@ class PlotView(val points: Array<DoubleArray>,
 
     private val width = 640
     private val height = 640
-    private val offsetX = 40
-    private val offsetY = 40
+    private val offsetX = 20
+    private val offsetY = 20
 
     private var coef by Delegates.notNull<Double>()
     private val stepX = 1
@@ -47,8 +56,31 @@ class PlotView(val points: Array<DoubleArray>,
     }
 
     private fun addComponentsToPane(pane: Container) {
-        pane.layout = GridLayout(0, 1)
-        pane.add(PlotPane(width, height, coef, width/2 - offsetX, height/2 - offsetY, stepX, expression1, expression2, points))
+        pane.layout = GridBagLayout()
+        val paneConstraints = GridBagConstraints()
+        paneConstraints.fill = GridBagConstraints.HORIZONTAL
+        paneConstraints.gridx = 0
+        paneConstraints.gridy = 0
+        val expression1 = ExpressionBuilder(formula1).variable("x").build()
+        val expression2 = ExpressionBuilder(formula2).variable("x").build()
+        pane.add(PlotPane(width, height, coef, width/2 - offsetX, height/2 - offsetY, stepX, dropId, expression1, expression2, points), paneConstraints)
+
+        val labelsPanel = JPanel()
+        val labelsConstrains = GridBagConstraints()
+        labelsPanel.layout = GridBagLayout()
+        labelsConstrains.fill = GridBagConstraints.HORIZONTAL
+        labelsConstrains.gridx = 0
+        labelsConstrains.gridy = 0
+        labelsPanel.add(JLabel("Зеленый график: $formula1"), labelsConstrains)
+
+        labelsConstrains.gridy = 1
+        labelsPanel.add(JLabel("Синий график: $formula2"), labelsConstrains)
+
+        labelsConstrains.gridy = 2
+        labelsPanel.add(JLabel("Исключенная точка: (${formatter.format(points[dropId][0])} : ${formatter.format(points[dropId][1])})"), labelsConstrains)
+
+        paneConstraints.gridy = 1
+        pane.add(labelsPanel, paneConstraints)
     }
 
     private fun calculateBoundsAndCoefficients() {
@@ -77,6 +109,7 @@ class PlotView(val points: Array<DoubleArray>,
                            val centerX: Int,
                            val centerY: Int,
                            val stepX: Int,
+                           val dropId: Int,
                            val formula1: Expression,
                            val formula2: Expression,
                            val points: Array<DoubleArray>): JPanel() {
@@ -100,7 +133,13 @@ class PlotView(val points: Array<DoubleArray>,
             for (i in points.indices) {
                 val x = (points[i][0] * coef).toInt()
                 val y = -(points[i][1] * coef).toInt()
+                if (i == dropId) {
+                    g.color = Color.RED
+                }
                 g.fillArc(x-3, y-3, 6, 6, 0, 360)
+                if (i == dropId) {
+                    g.color = Color.GRAY
+                }
             }
 
             var prevX = -centerX / coef
@@ -108,12 +147,19 @@ class PlotView(val points: Array<DoubleArray>,
             var prevY2 = -formula2.setVariable("x", -centerX/coef).evaluate()
             for (x in -centerX until centerX step stepX) {
                 val tx = x / coef
-                val ty1 = -formula1.setVariable("x", tx).evaluate()
-                val ty2 = -formula2.setVariable("x", tx).evaluate()
-                g.color = Color.RED
-                g.drawLine((prevX*coef).toInt(), (prevY1*coef).toInt(), (tx*coef).toInt(), (ty1*coef).toInt())
+                var ty1: Double?
+                var ty2: Double?
+                try {
+                    ty1 = -formula1.setVariable("x", tx).evaluate()
+                    ty2 = -formula2.setVariable("x", tx).evaluate()
+                } catch (e: Exception) {
+                    ty1 = -formula1.setVariable("x", tx + 0.00001).evaluate()
+                    ty2 = -formula2.setVariable("x", tx + 0.00001).evaluate()
+                }
+                g.color = Color.GREEN
+                g.drawLine((prevX*coef).toInt(), (prevY1*coef).toInt(), (tx*coef).toInt(), (ty1!!*coef).toInt())
                 g.color = Color.BLUE
-                g.drawLine((prevX*coef).toInt(), (prevY2*coef).toInt(), (tx*coef).toInt(), (ty2*coef).toInt())
+                g.drawLine((prevX*coef).toInt(), (prevY2*coef).toInt(), (tx*coef).toInt(), (ty2!!*coef).toInt())
                 prevX = tx
                 prevY1 = ty1
                 prevY2 = ty2
