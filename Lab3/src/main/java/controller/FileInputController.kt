@@ -42,9 +42,8 @@ class FileInputController(private val view: FileInputView) : Controller {
                         counter++
                     }
                 } catch (e: Exception) {
-                    e.printStackTrace()
                     JOptionPane.showMessageDialog(view.parent,
-                            "Ошибка в формате файла. Попробуйте выбрать другой файл или изменить текущий.",
+                            "Возникла ошибка при чтении файла. Проверьте его формат и права доступа.",
                             "Ошибка!",
                             JOptionPane.WARNING_MESSAGE)
                 }

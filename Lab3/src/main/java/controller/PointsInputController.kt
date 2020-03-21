@@ -62,7 +62,6 @@ class PointsInputController(private val view: PointsInputView): Controller {
                 }
                 data = model.validate(methodType, view.table.model as DefaultTableModel)
             } catch (e: Exception) {
-                e.printStackTrace() //TODO: убрать
                 successValidation = false
             }
 
