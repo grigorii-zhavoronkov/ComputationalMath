@@ -102,6 +102,10 @@ class PointsInputView(val parent: JFrame, val rowSize: Int) {
         pane.add(base)
     }
 
+    public fun changeTableValue(row: Int, column: Int, value: Any) {
+        table.setValueAt(value, row, column)
+    }
+
     private fun initTable(rowSize: Int) {
         val columnNames = Vector<String>(2)
         columnNames.addElement("X")
@@ -115,5 +119,6 @@ class PointsInputView(val parent: JFrame, val rowSize: Int) {
         }
 
         table = JTable(data, columnNames)
+        table.cellSelectionEnabled = true
     }
 }

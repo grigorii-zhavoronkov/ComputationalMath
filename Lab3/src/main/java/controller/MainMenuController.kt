@@ -1,5 +1,6 @@
 package controller
 
+import view.FileInputView
 import view.MainMenuView
 import view.PointsInputView
 
@@ -12,7 +13,9 @@ class MainMenuController(val view: MainMenuView): Controller {
     override fun addActionListeners() {
         view.fileInputButton.addActionListener {
             run {
-                // TODO: fileInputView implementation
+                val fileInputView = FileInputView(view.frame)
+                FileInputController(fileInputView)
+                fileInputView.showDialog()
             }
         }
         view.pointsInputButton.addActionListener {
