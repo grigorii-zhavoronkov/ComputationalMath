@@ -27,51 +27,40 @@ class PointsInputController(val view: PointsInputView): Controller {
         view.nextButton.addActionListener {
             lateinit var data: Array<DoubleArray>
             lateinit var methodType: ApproximationMethod.Type
+            val model = ApproximationMethod()
 
             var successValidation = true
             try {
-                data = when {
+                when {
                     view.linearApproximation.isSelected -> {
                         methodType = ApproximationMethod.Type.LINEAR
-                        parse()
                     }
                     view.squareApproximation.isSelected -> {
                         methodType = ApproximationMethod.Type.SQUARE
-                        parse()
                     }
                     view.cubeApproximation.isSelected -> {
                         methodType = ApproximationMethod.Type.CUBE
-                        parse()
                     }
                     view.powerApproximation.isSelected -> {
                         methodType = ApproximationMethod.Type.POWER
-                        parse()
-                        // x[i] > 0 y[i] > 0
                     }
                     view.hyperbolaApproximation.isSelected -> {
                         methodType = ApproximationMethod.Type.HYPERBOLA
-                        parse()
-                        // x[i] != 0
                     }
                     view.indicativeApproximation.isSelected -> {
                         methodType = ApproximationMethod.Type.INDICATIVE
-                        parse()
-                        // y[i] > 0
                     }
                     view.logApproximation.isSelected -> {
                         methodType = ApproximationMethod.Type.LOG
-                        parse()
-                        // x[i] > 0
                     }
                     view.expApproximation.isSelected -> {
                         methodType = ApproximationMethod.Type.EXP
-                        parse()
-                        // y[i] > 0
                     }
                     else -> {
                         throw IllegalArgumentException()
                     }
                 }
+                data = model.validate(methodType, view.table.model as DefaultTableModel)
             } catch (e: Exception) {
                 e.printStackTrace() //TODO: убрать
                 successValidation = false
@@ -79,7 +68,6 @@ class PointsInputController(val view: PointsInputView): Controller {
 
             if (successValidation) {
                 try {
-                    val model = ApproximationMethod()
                     val finder = PointFinder()
                     val formula1 = model.evaluate(view.rowSize, data, methodType)
                     val dropId = finder.findPointId(data, formula1)
@@ -110,16 +98,6 @@ class PointsInputController(val view: PointsInputView): Controller {
                         JOptionPane.WARNING_MESSAGE)
             }
         }
-    }
-
-    private fun parse(): Array<DoubleArray> {
-        val data = Array(view.rowSize) {DoubleArray(2)}
-        val tableModel: DefaultTableModel = view.table.model as DefaultTableModel
-        for (i in 0 until tableModel.rowCount) {
-            data[i][0] = (tableModel.getValueAt(i, 0) as String).toDouble()
-            data[i][1] = (tableModel.getValueAt(i, 1) as String).toDouble()
-        }
-        return data
     }
 
     private class CustomWindowCloseOperationAdapter(val parent: JFrame): WindowAdapter() {

@@ -4,7 +4,7 @@ import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
-import kotlin.math.abs
+import javax.swing.table.DefaultTableModel
 import kotlin.math.ln
 import kotlin.math.pow
 
@@ -22,6 +22,39 @@ class ApproximationMethod {
         INDICATIVE,
         LOG,
         EXP
+    }
+
+    fun validate(type: Type, tableModel: DefaultTableModel): Array<DoubleArray> {
+        val data = Array(tableModel.rowCount) {DoubleArray(2)}
+        for (i in 0 until tableModel.rowCount) {
+            val x = (tableModel.getValueAt(i, 0) as String).toDouble()
+            val y = (tableModel.getValueAt(i, 1) as String).toDouble()
+            when (type) {
+                Type.POWER -> {
+                    if (x <= 0 || y <= 0) {
+                        throw Exception()
+                    }
+                }
+                Type.HYPERBOLA -> {
+                    if (x == 0.0) {
+                        throw Exception()
+                    }
+                }
+                Type.INDICATIVE, Type.EXP -> {
+                    if (y <= 0) {
+                        throw Exception()
+                    }
+                }
+                Type.LOG -> {
+                    if (x <= 0) {
+                        throw Exception()
+                    }
+                }
+            }
+            data[i][0] = x
+            data[i][1] = y
+        }
+        return data
     }
 
     fun evaluate(size: Int, data: Array<DoubleArray>, type: Type): String {
