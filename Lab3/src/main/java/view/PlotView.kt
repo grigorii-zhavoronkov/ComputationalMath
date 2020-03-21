@@ -139,16 +139,18 @@ class PlotView(val points: Array<DoubleArray>,
 
     }
 
-    class PlotPane(val _width: Int,
-                   val _height: Int,
+    class PlotPane(private val _width: Int,
+                   private val _height: Int,
                    var coef: Double,
                    var centerX: Int,
                    var centerY: Int,
-                   val stepX: Int,
-                   val dropId: Int,
-                   val formula1: Expression,
-                   val formula2: Expression,
-                   val points: Array<DoubleArray>): JPanel() {
+                   private val stepX: Int,
+                   private val dropId: Int,
+                   private val formula1: Expression,
+                   private val formula2: Expression,
+                   private val points: Array<DoubleArray>): JPanel() {
+
+        private val arrowSize = 5
 
         override fun getPreferredSize(): Dimension {
             return Dimension(_width, _height)
@@ -164,8 +166,24 @@ class PlotView(val points: Array<DoubleArray>,
             g.drawLine(0, centerY, _width, centerY)
             g.drawLine(centerX, 0, centerX, _height)
 
+            /* draw arrows */
+            g.drawLine(_width, centerY, _width - arrowSize, centerY-arrowSize)
+            g.drawLine(_width, centerY, _width - arrowSize, centerY+arrowSize)
+            g.drawString("X", _width - 10, centerY - 10)
+            g.drawString("Y", centerX + 10, 10)
+            g.drawLine(centerX, 0, centerX + arrowSize, arrowSize)
+            g.drawLine(centerX, 0, centerX - arrowSize, arrowSize)
+
+            /* draw ords */
+            g.drawLine(centerX + coef.toInt(), centerY - 5, centerX + coef.toInt(), centerY + 5)
+            g.drawString("1", centerX + coef.toInt(), centerY - 5)
+            g.drawLine(centerX - 5, centerY - coef.toInt(), centerX + 5, centerY - coef.toInt())
+            g.drawString("1", centerX - 8, centerY - coef.toInt() - 2)
+
+            /* translating coordinates */
             g.translate(centerX, centerY)
 
+            /* draw points */
             for (i in points.indices) {
                 val x = (points[i][0] * coef).toInt()
                 val y = -(points[i][1] * coef).toInt()
@@ -177,6 +195,8 @@ class PlotView(val points: Array<DoubleArray>,
                     g.color = Color.GRAY
                 }
             }
+
+            /* draw plots */
 
             var prevX = -centerX / coef
             var prevY1 = -formula1.setVariable("x", -centerX/coef).evaluate()
