@@ -21,7 +21,8 @@ class PlotView(val points: Array<DoubleArray>,
 
     val frame = JFrame()
 
-    val formatter = DecimalFormat("#.#####", DecimalFormatSymbols(Locale.GERMAN))
+    private var decimalFormatSymbols = DecimalFormatSymbols(Locale.GERMAN)
+    private var formatter: DecimalFormat
 
     var minY = Double.MAX_VALUE
     var minX = Double.MAX_VALUE
@@ -45,6 +46,8 @@ class PlotView(val points: Array<DoubleArray>,
     lateinit var plotPane: PlotPane
 
     init {
+        decimalFormatSymbols.decimalSeparator = '.'
+        formatter = DecimalFormat("#.#####", decimalFormatSymbols)
         calculateBoundsAndCoefficients()
         addComponentsToPane(frame.contentPane)
         addSettings()

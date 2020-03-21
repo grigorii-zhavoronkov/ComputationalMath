@@ -4,7 +4,7 @@ import view.FileInputView
 import view.MainMenuView
 import view.PointsInputView
 
-class MainMenuController(val view: MainMenuView): Controller {
+class MainMenuController(private val view: MainMenuView): Controller {
 
     init {
         addActionListeners()

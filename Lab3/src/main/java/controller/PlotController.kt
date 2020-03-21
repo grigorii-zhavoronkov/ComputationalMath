@@ -13,13 +13,13 @@ import javax.swing.JOptionPane
 import javax.swing.event.MouseInputAdapter
 import kotlin.properties.Delegates
 
-class PlotController(val view: PlotView) : Controller {
+class PlotController(private val view: PlotView) : Controller {
 
     init {
         addActionListeners()
     }
 
-    val formatter = DecimalFormat("#.#####", DecimalFormatSymbols(Locale.GERMAN))
+    private val formatter = DecimalFormat("#.#####", DecimalFormatSymbols(Locale.GERMAN))
 
     override fun addActionListeners() {
         view.frame.addWindowListener(CustomWindowCloseOperationAdapter(view.parent))

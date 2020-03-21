@@ -8,7 +8,7 @@ import java.util.*
 import javax.swing.JOptionPane
 import kotlin.collections.ArrayList
 
-class FileInputController(val view: FileInputView) : Controller {
+class FileInputController(private val view: FileInputView) : Controller {
 
     init {
         addActionListeners()

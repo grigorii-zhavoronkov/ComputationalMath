@@ -13,8 +13,8 @@ class MainMenuView {
     private val nSpinnerModel = SpinnerNumberModel(4, 4, 100, 1)
     val nInput = JSpinner(nSpinnerModel)
 
-    val nLabel = JLabel("Введите N (количество точек):")
-    val orLabel = JLabel("или")
+    private val nLabel = JLabel("Введите N (количество точек):")
+    private val orLabel = JLabel("или")
 
     init {
         addComponentsToPane(frame.contentPane)

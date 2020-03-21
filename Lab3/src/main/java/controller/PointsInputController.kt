@@ -10,7 +10,7 @@ import javax.swing.JFrame
 import javax.swing.JOptionPane
 import javax.swing.table.DefaultTableModel
 
-class PointsInputController(val view: PointsInputView): Controller {
+class PointsInputController(private val view: PointsInputView): Controller {
 
     init {
         addActionListeners()

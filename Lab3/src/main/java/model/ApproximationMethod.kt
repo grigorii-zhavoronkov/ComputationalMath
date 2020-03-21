@@ -10,7 +10,7 @@ import kotlin.math.pow
 
 class ApproximationMethod {
 
-    val decimalFormatSymbols = DecimalFormatSymbols(Locale.GERMAN)
+    private val decimalFormatSymbols = DecimalFormatSymbols(Locale.GERMAN)
     lateinit var format: DecimalFormat
 
     enum class Type {
