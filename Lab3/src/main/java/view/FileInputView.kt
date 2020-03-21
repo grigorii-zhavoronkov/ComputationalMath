@@ -21,5 +21,6 @@ class FileInputView(val parent: JFrame) {
         if (result != null) {
             selectedFile = File(fileChooser.directory + result)
         }
+        fileChooser.dispose()
     }
 }
