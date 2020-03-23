@@ -22,7 +22,12 @@ class PointsInputController(private val view: PointsInputView): Controller {
             view.frame.dispose()
         }
 
-        view.frame.addWindowListener(CustomWindowCloseOperationAdapter(view.parent))
+        view.frame.addWindowListener(object : WindowAdapter() {
+            override fun windowClosed(e: WindowEvent?) {
+                super.windowClosed(e)
+                view.parent.isEnabled = true
+            }
+        })
 
         view.nextButton.addActionListener {
             lateinit var data: Array<DoubleArray>
@@ -84,7 +89,6 @@ class PointsInputController(private val view: PointsInputView): Controller {
                     PlotController(plotView)
                     view.frame.isVisible = false
                 } catch (e: Exception) {
-                    e.printStackTrace()
                     JOptionPane.showMessageDialog(view.frame,
                             "Возникла ошибка при вычислениях. Попробуйте ввести другие данные.",
                             "Ошибка вычислений",
@@ -96,13 +100,6 @@ class PointsInputController(private val view: PointsInputView): Controller {
                         "Ошибка валидации",
                         JOptionPane.WARNING_MESSAGE)
             }
-        }
-    }
-
-    private class CustomWindowCloseOperationAdapter(val parent: JFrame): WindowAdapter() {
-        override fun windowClosed(e: WindowEvent?) {
-            super.windowClosed(e)
-            parent.isEnabled = true
         }
     }
 }

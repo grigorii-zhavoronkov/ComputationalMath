@@ -13,6 +13,7 @@ class MainMenuController(private val view: MainMenuView): Controller {
     override fun addActionListeners() {
         view.fileInputButton.addActionListener {
             run {
+                view.frame.isEnabled = false
                 val fileInputView = FileInputView(view.frame)
                 FileInputController(fileInputView)
                 fileInputView.showDialog()

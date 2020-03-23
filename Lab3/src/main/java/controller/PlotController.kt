@@ -22,7 +22,12 @@ class PlotController(private val view: PlotView) : Controller {
     private val formatter = DecimalFormat("#.#####", DecimalFormatSymbols(Locale.GERMAN))
 
     override fun addActionListeners() {
-        view.frame.addWindowListener(CustomWindowCloseOperationAdapter(view.parent))
+        view.frame.addWindowListener(object : WindowAdapter() {
+            override fun windowClosed(e: WindowEvent?) {
+                super.windowClosed(e)
+                view.parent.isVisible = true
+            }
+        })
         view.plotPane.addMouseWheelListener {
             run {
                 val plotPane = view.plotPane
@@ -37,7 +42,31 @@ class PlotController(private val view: PlotView) : Controller {
                 }
             }
         }
-        val customMouseDragListener = CustomMouseDragListener(view)
+        val customMouseDragListener = object : MouseInputAdapter() {
+            private var pressedX by Delegates.notNull<Int>()
+            private var pressedY by Delegates.notNull<Int>()
+
+            override fun mousePressed(e: MouseEvent?) {
+                super.mousePressed(e!!)
+                pressedX = e.x
+                pressedY = e.y
+            }
+
+            override fun mouseDragged(e: MouseEvent?) {
+                super.mouseDragged(e!!)
+                val dx = e.x - pressedX
+                val dy = e.y - pressedY
+                val plotPane = view.plotPane
+                plotPane.centerX += dx
+                plotPane.centerY += dy
+                view.frame.remove(plotPane)
+                view.frame.add(plotPane)
+                view.frame.revalidate()
+                view.frame.repaint()
+                pressedX = e.x
+                pressedY = e.y
+            }
+        }
         view.plotPane.addMouseListener(customMouseDragListener)
         view.plotPane.addMouseMotionListener(customMouseDragListener)
         view.calculationButton.addActionListener {
@@ -55,39 +84,6 @@ class PlotController(private val view: PlotView) : Controller {
                     JOptionPane.showMessageDialog(view.frame, "Некорректное значение x.", "Ошибка", JOptionPane.WARNING_MESSAGE)
                 }
             }
-        }
-    }
-
-    private class CustomWindowCloseOperationAdapter(val parent: JFrame): WindowAdapter() {
-        override fun windowClosed(e: WindowEvent?) {
-            super.windowClosed(e)
-            parent.isVisible = true
-        }
-    }
-
-    private class CustomMouseDragListener(val view: PlotView): MouseInputAdapter() {
-        private var pressedX by Delegates.notNull<Int>()
-        private var pressedY by Delegates.notNull<Int>()
-
-        override fun mousePressed(e: MouseEvent?) {
-            super.mousePressed(e!!)
-            pressedX = e.x
-            pressedY = e.y
-        }
-
-        override fun mouseDragged(e: MouseEvent?) {
-            super.mouseDragged(e!!)
-            val dx = e.x - pressedX
-            val dy = e.y - pressedY
-            val plotPane = view.plotPane
-            plotPane.centerX += dx
-            plotPane.centerY += dy
-            view.frame.remove(plotPane)
-            view.frame.add(plotPane)
-            view.frame.revalidate()
-            view.frame.repaint()
-            pressedX = e.x
-            pressedY = e.y
         }
     }
 }
