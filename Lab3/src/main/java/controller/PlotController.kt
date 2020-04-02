@@ -31,14 +31,18 @@ class PlotController(private val view: PlotView) : Controller {
         view.plotPane.addMouseWheelListener {
             run {
                 val plotPane = view.plotPane
-                plotPane.coef += it.wheelRotation * 0.5
-                if (plotPane.coef > 10.0) {
+                val lastX = plotPane.coefX
+                val lastY = plotPane.coefY
+                plotPane.coefX += it.wheelRotation * 0.5 / (lastX / lastY)
+                plotPane.coefY += it.wheelRotation * 0.5 / (lastX / lastY)
+                if (plotPane.coefX > 0.001 && plotPane.coefY > 0.001) {
                     view.frame.remove(plotPane)
                     view.frame.add(plotPane)
                     view.frame.revalidate()
                     view.frame.repaint()
                 } else {
-                    plotPane.coef = 10.0
+                    plotPane.coefX = lastX
+                    plotPane.coefY = lastY
                 }
             }
         }

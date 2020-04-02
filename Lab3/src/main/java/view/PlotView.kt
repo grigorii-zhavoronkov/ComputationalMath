@@ -40,7 +40,8 @@ class PlotView(val points: Array<DoubleArray>,
     var offsetX = 20
     var offsetY = 20
 
-    private var coef by Delegates.notNull<Double>()
+    private var coefX by Delegates.notNull<Double>()
+    private var coefY by Delegates.notNull<Double>()
     private val stepX = 1
 
     lateinit var plotPane: PlotPane
@@ -71,7 +72,7 @@ class PlotView(val points: Array<DoubleArray>,
         paneConstraints.gridy = 0
         val expression1 = ExpressionBuilder(formula1).variable("x").build()
         val expression2 = ExpressionBuilder(formula2).variable("x").build()
-        plotPane = PlotPane(width, height, coef, width/2 - offsetX, height/2 - offsetY, stepX, dropId, expression1, expression2, points)
+        plotPane = PlotPane(width, height, coefX, coefY, width/2 - offsetX, height/2 - offsetY, stepX, dropId, expression1, expression2, points)
         pane.add(plotPane, paneConstraints)
 
         val labelsPanel = JPanel()
@@ -138,13 +139,14 @@ class PlotView(val points: Array<DoubleArray>,
             }
         }
 
-        coef = min((width / 2 - offsetX) / max(abs(maxX), abs(minX)), (height / 2 - offsetY) / max(abs(maxY), abs(minY)))
-
+        coefX = (width / 2 - offsetX) / max(abs(maxX), abs(minX))
+        coefY = (height / 2 - offsetY) / max(abs(maxY), abs(minY))
     }
 
     class PlotPane(private val _width: Int,
                    private val _height: Int,
-                   var coef: Double,
+                   var coefX: Double,
+                   var coefY: Double,
                    var centerX: Int,
                    var centerY: Int,
                    private val stepX: Int,
@@ -178,18 +180,18 @@ class PlotView(val points: Array<DoubleArray>,
             g.drawLine(centerX, 0, centerX - arrowSize, arrowSize)
 
             /* draw ords */
-            g.drawLine(centerX + coef.toInt(), centerY - 5, centerX + coef.toInt(), centerY + 5)
-            g.drawString("1", centerX + coef.toInt(), centerY - 5)
-            g.drawLine(centerX - 5, centerY - coef.toInt(), centerX + 5, centerY - coef.toInt())
-            g.drawString("1", centerX - 8, centerY - coef.toInt() - 2)
+            g.drawLine(centerX + coefX.toInt(), centerY - 5, centerX + coefX.toInt(), centerY + 5)
+            g.drawString("1", centerX + coefX.toInt(), centerY - 5)
+            g.drawLine(centerX - 5, centerY - coefY.toInt(), centerX + 5, centerY - coefY.toInt())
+            g.drawString("1", centerX - 8, centerY - coefY.toInt() - 2)
 
             /* translating coordinates */
             g.translate(centerX, centerY)
 
             /* draw points */
             for (i in points.indices) {
-                val x = (points[i][0] * coef).toInt()
-                val y = -(points[i][1] * coef).toInt()
+                val x = (points[i][0] * coefX).toInt()
+                val y = -(points[i][1] * coefY).toInt()
                 if (i == dropId) {
                     g.color = Color.RED
                 }
@@ -201,15 +203,15 @@ class PlotView(val points: Array<DoubleArray>,
 
             /* draw plots */
 
-            var prevX = -centerX / coef
-            var prevY1 = -formula1.setVariable("x", -centerX/coef).evaluate()
-            var prevY2 = -formula2.setVariable("x", -centerX/coef).evaluate()
+            var prevX = -centerX / coefX
+            var prevY1 = -formula1.setVariable("x", prevX).evaluate()
+            var prevY2 = -formula2.setVariable("x", prevX).evaluate()
 
             val fromX = -centerX
             val toX = abs(centerX) + _width
 
             for (x in fromX until toX step stepX) {
-                val tx = x / coef
+                val tx = x / coefX
                 var ty1: Double?
                 var ty2: Double?
                 try {
@@ -220,9 +222,9 @@ class PlotView(val points: Array<DoubleArray>,
                     ty2 = -formula2.setVariable("x", tx + 0.00001).evaluate()
                 }
                 g.color = Color.GREEN
-                g.drawLine((prevX*coef).toInt(), (prevY1*coef).toInt(), (tx*coef).toInt(), (ty1!!*coef).toInt())
+                g.drawLine((prevX*coefX).toInt(), (prevY1*coefY).toInt(), (tx*coefX).toInt(), (ty1!!*coefY).toInt())
                 g.color = Color.BLUE
-                g.drawLine((prevX*coef).toInt(), (prevY2*coef).toInt(), (tx*coef).toInt(), (ty2!!*coef).toInt())
+                g.drawLine((prevX*coefX).toInt(), (prevY2*coefY).toInt(), (tx*coefX).toInt(), (ty2!!*coefY).toInt())
                 prevX = tx
                 prevY1 = ty1
                 prevY2 = ty2
