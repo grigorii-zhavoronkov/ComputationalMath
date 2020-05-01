@@ -43,6 +43,7 @@ class FileInputController(private val view: FileInputView) : Controller {
                             "Возникла ошибка при чтении файла. Проверьте его формат и права доступа.",
                             "Ошибка!",
                             JOptionPane.WARNING_MESSAGE)
+                        view.parent.isEnabled = true
                     }
                 }
             }

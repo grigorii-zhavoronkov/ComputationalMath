@@ -82,12 +82,16 @@ class ApproximationMethod {
             sumx += data[i][0]
             sumy += data[i][1]
             sumxy += data[i][0] * data[i][1]
-            sumx2 += data[i][0] * data[i][0]
+            sumx2 += data[i][0].pow(2)
         }
         val a: Double = format.format((sumx*sumy - size*sumxy) / (sumx.pow(2) - size * sumx2)).toDouble()
         val b: Double = format.format((sumx*sumxy - sumx2*sumy) / (sumx.pow(2) - size * sumx2)).toDouble()
         if (a.isFinite() && b.isFinite()) {
-            return "$a*x+$b"
+            return if (b >= 0) {
+                "$a*x+$b"
+            } else {
+                "$a*x$b"
+            }
         } else {
             throw Exception()
         }
@@ -106,11 +110,11 @@ class ApproximationMethod {
             val y = data[i][1]
             sumx += x
             sumy += y
-            sumx2 += x*x
-            sumx3 += x*x*x
-            sumx4 += x*x*x*x
+            sumx2 += x.pow(2)
+            sumx3 += x.pow(3)
+            sumx4 += x.pow(4)
             sumxy += x*y
-            sumx2y += x*x*y
+            sumx2y += x.pow(2)*y
         }
 
         val matrix = Array(3) {DoubleArray(3)}
@@ -149,7 +153,18 @@ class ApproximationMethod {
         val b = format.format(db/d).toDouble()
         val c = format.format(dc/d).toDouble()
         if (a.isFinite() && b.isFinite() && c.isFinite()) {
-            return "$a*x^2 + $b*x + $c"
+            var result = "$a*x^2"
+            result += if (b >= 0) {
+                "+$b*x"
+            } else {
+                "$b*x"
+            }
+            result += if (c >= 0) {
+                "+$c"
+            } else {
+                "$c"
+            }
+            return result
         } else {
             throw Exception()
         }
@@ -242,7 +257,23 @@ class ApproximationMethod {
         val pd = format.format(dd/d).toDouble()
 
         if (pa.isFinite() && pb.isFinite() && pc.isFinite() && pd.isFinite()) {
-            return "$pa * x^3 + $pb * x^2 + $pc * x + $pd"
+            var result = "$pa * x^3"
+            result += if (pb >= 0) {
+                "+$pb*x^2"
+            } else {
+                "$pb*x^2"
+            }
+            result += if (pc >= 0) {
+                "+$pc*x"
+            } else {
+                "$pc*x"
+            }
+            result += if (pd >= 0) {
+                "+$pd"
+            } else {
+                "$pd"
+            }
+            return result
         } else {
             throw Exception()
         }
@@ -287,7 +318,11 @@ class ApproximationMethod {
         val b = format.format((size * sumyx - sumx * sumy) / (size * sumx2 - sumx.pow(2))).toDouble()
         val a = format.format(1.0/size * sumy - b/size * sumx).toDouble()
         if (a.isFinite() && b.isFinite()) {
-            return "$a + $b/x"
+            return if (b > 0) {
+                "$a + $b/x"
+            } else {
+                "$a $b/x"
+            }
         } else {
             throw Exception()
         }
@@ -335,7 +370,11 @@ class ApproximationMethod {
         val a = format.format(1.0/size * sumy - b/size * sumlnx).toDouble()
 
         if (a.isFinite() && b.isFinite()) {
-            return "$a + $b * log(x)"
+            return if (b >= 0) {
+                "$a+$b * log(x)"
+            } else {
+                "$a$b * log(x)"
+            }
         } else {
             throw Exception()
         }
@@ -359,7 +398,11 @@ class ApproximationMethod {
         val b = format.format((size * sumxlny - sumx * sumlny) / (size * sumx2 - sumx.pow(2))).toDouble()
         val a = format.format(1.0/size * sumlny - b/size * sumx).toDouble()
         if (a.isFinite() && b.isFinite()) {
-            return "e^($a + $b * x)"
+            return if (b >= 0) {
+                "e^($a+$b * x)"
+            } else {
+                "e^($a$b * x)"
+            }
         } else {
             throw Exception()
         }

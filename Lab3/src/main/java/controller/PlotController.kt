@@ -33,9 +33,9 @@ class PlotController(private val view: PlotView) : Controller {
                 val plotPane = view.plotPane
                 val lastX = plotPane.coefX
                 val lastY = plotPane.coefY
-                plotPane.coefX += it.wheelRotation * 0.5 / (lastX / lastY)
-                plotPane.coefY += it.wheelRotation * 0.5 / (lastX / lastY)
-                if (plotPane.coefX > 0.001 && plotPane.coefY > 0.001) {
+                plotPane.coefX += it.wheelRotation * 0.5
+                plotPane.coefY += (plotPane.coefX - lastX) * lastY / lastX
+                if (plotPane.coefX > 0.1 && plotPane.coefY > 0.1) {
                     view.frame.remove(plotPane)
                     view.frame.add(plotPane)
                     view.frame.revalidate()
