@@ -11,12 +11,15 @@ class EulerMethod(private val formula: Formula,
 
     fun evaluate(): Array<Point> {
         val result = ArrayList<Point>()
-        while (x < endOfSegment) {
+        println("========== BEGIN OF OUTPUT ==========")
+        while (x <= endOfSegment) {
             val point = Point(x, y)
+            println("$x : $y")
             result.add(point)
-            x += accuracy
             y += accuracy * formula.expression.setVariable("x", x).setVariable("y", y).evaluate()
+            x += accuracy
         }
+        println("=========== END OF OUTPUT ===========")
         return result.toTypedArray()
     }
 }

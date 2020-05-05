@@ -36,7 +36,7 @@ class MainInputController(val view: MainInputView) {
             try {
                 val formula = Formula(
                     view.secondArgumentLabel.text,
-                    ExpressionBuilder(view.secondArgumentLabel.text).variables("x", "y").build()
+                    ExpressionBuilder("-(${view.secondArgumentLabel.text})").variables("x", "y").build()
                 )
                 val x = view.xInputTextField.text.toDouble()
                 val y = view.yInputTextField.text.toDouble()
