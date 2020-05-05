@@ -28,7 +28,7 @@ class ApproximationMethod {
 
     fun findBest(data: Array<Point>): Formula {
         var bestFormula: Formula? = null
-        val minDelta = Double.MAX_VALUE
+        var minDelta = Double.MAX_VALUE
         enumValues<Type>().forEach next@{
             val formula = try {
                 evaluate(data, it)
@@ -40,6 +40,7 @@ class ApproximationMethod {
                 delta += (point.y - formula.expression.setVariable("x", point.x).evaluate()).pow(2)
             }
             if (delta < minDelta) {
+                minDelta = delta
                 bestFormula = formula
             }
         }

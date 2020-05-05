@@ -12,7 +12,7 @@ class EulerMethod(private val formula: Formula,
     fun evaluate(): Array<Point> {
         val result = ArrayList<Point>()
         println("========== BEGIN OF OUTPUT ==========")
-        while (x <= endOfSegment) {
+        for (i in 0 .. ((endOfSegment - x)/accuracy).toInt()) {
             val point = Point(x, y)
             println("$x : $y")
             result.add(point)
