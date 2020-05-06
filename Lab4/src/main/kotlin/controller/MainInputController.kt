@@ -4,6 +4,7 @@ import model.Formula
 import model.Point
 import net.objecthunter.exp4j.ExpressionBuilder
 import utils.ApproximationMethod
+import utils.DataPrinter
 import utils.EulerMethod
 import view.MainInputView
 import view.PlotView
@@ -51,6 +52,10 @@ class MainInputController(val view: MainInputView) {
                     JOptionPane.WARNING_MESSAGE)
                 return@addActionListener
             }
+
+            val printer = DataPrinter()
+            printer.printPoints(data)
+
             val approximationMethod: ApproximationMethod?
             val formula: Formula?
             try {
