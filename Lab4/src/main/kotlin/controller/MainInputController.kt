@@ -20,6 +20,7 @@ class MainInputController(val view: MainInputView) {
 
             override fun insertUpdate(e: DocumentEvent?) {
                 view.secondArgumentLabel.text = "(${view.inputFunctionTextField.text})"
+                view.frame.pack()
             }
 
             override fun removeUpdate(e: DocumentEvent?) {
@@ -28,6 +29,7 @@ class MainInputController(val view: MainInputView) {
                 } else {
                     view.secondArgumentLabel.text = "(${view.inputFunctionTextField.text})"
                 }
+                view.frame.pack()
             }
         })
 
